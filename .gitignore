@@ -1,0 +1,20 @@
+# Logs and local output
+*.log
+logs/
+reports/
+Data/exports/
+Data/rollback/
+!Data/.gitkeep
+
+# Windows / editor
+Thumbs.db
+Desktop.ini
+.vs/
+.idea/
+
+# Accidental backups
+*.bak
+*~
+
+# Driver backups created by Module 4 (optional: remove if you want to track backups)
+DriversBackup/

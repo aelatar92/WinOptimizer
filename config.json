@@ -1,0 +1,56 @@
+﻿{
+    "version":  "2.0.0",
+    "uiMode":  "advanced",
+    "confirmRiskyActions":  true,
+    "requireRestorePointBeforeRisky":  true,
+    "minFreeSpacePercentOnC":  10,
+    "logRetentionDays":  30,
+    "defaultDns":  {
+                       "primary":  "1.1.1.1",
+                       "secondary":  "1.0.0.1"
+                   },
+    "beginnerAllowedModules":  [
+                                   1,
+                                   2,
+                                   6,
+                                   7,
+                                   15,
+                                   16,
+                                   17
+                               ],
+    "wingetBundles":  {
+                          "developer":  [
+                                            "Git.Git",
+                                            "Microsoft.VisualStudioCode",
+                                            "OpenJS.NodeJS.LTS",
+                                            "Python.Python.3.12",
+                                            "7zip.7zip"
+                                        ],
+                          "gaming":  [
+                                         "Valve.Steam",
+                                         "Discord.Discord",
+                                         "VideoLAN.VLC",
+                                         "7zip.7zip"
+                                     ],
+                          "office":  [
+                                         "LibreOffice.LibreOffice",
+                                         "Adobe.Acrobat.Reader.64-bit",
+                                         "7zip.7zip",
+                                         "Microsoft.PowerToys"
+                                     ],
+                          "essential":  [
+                                            "BraveSoftware.BraveBrowser",
+                                            "Tonec.InternetDownloadManager",
+                                            "VideoLAN.VLC",
+                                            "7zip.7zip"
+                                        ]
+                      },
+    "scheduledTasks":  {
+                           "weeklyTempClean":  {
+                                                   "enabled":  false,
+                                                   "day":  "Sunday",
+                                                   "time":  "03:00"
+                                               }
+                       },
+    "updateCheckUrl":  "https://raw.githubusercontent.com/example/WinOptimizer/main/config.json"
+}
