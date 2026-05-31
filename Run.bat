@@ -38,6 +38,9 @@ if not exist "Main.ps1" (
     exit
 )
 
+:: v2.2+ : You can also use the module way:
+:: powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Module .\WinOptimizer.psd1 -Force; Start-WinOptimizer"
+
 :: Classic console only (stable). For Windows Terminal use Run-WT.bat instead.
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0Main.ps1"
 
