@@ -1,5 +1,6 @@
-# WinOptimizer shared library v2.0
-$script:WinOptVersion = '2.0.0'
+# WinOptimizer shared library v2.1.0
+# Phase 1-4 Improvements Applied: Smart Profiles, Config Extensibility, Enhanced Logging, Arabic Readiness
+$script:WinOptVersion = '2.1.0'
 $script:WinOptRoot = $null
 $script:WinOptConfig = $null
 $script:WinOptMode = 'advanced'
@@ -26,6 +27,8 @@ $script:WinOptStrings = @{
     rollback_restored    = 'Rollback restored from:'
     health_score         = 'System Health Score'
     html_report_saved    = 'HTML report saved:'
+    profile_detected     = 'Smart Profile Detected'
+    profile_applied      = 'Profile optimizations suggested'
 }
 
 function Write-WinOptHost {
@@ -78,6 +81,11 @@ function Import-WinOptConfig {
         defaultDns = @{ primary = '1.1.1.1'; secondary = '1.0.0.1' }
         wingetBundles = @{}
         scheduledTasks = @{}
+        updateCheckUrl = 'https://api.github.com/repos/aelatar92/WinOptimizer/releases/latest'
+        enableSmartProfiles = $true
+        enableLocalAI = $false
+        language = 'en'
+        autoCreateRestorePoint = $true
     }
     if (Test-Path $configPath) {
         try {
@@ -111,6 +119,10 @@ function Save-WinOptConfig {
         wingetBundles = $script:WinOptConfig.wingetBundles
         scheduledTasks = $script:WinOptConfig.scheduledTasks
         updateCheckUrl = $script:WinOptConfig.updateCheckUrl
+        enableSmartProfiles = [bool]$script:WinOptConfig.enableSmartProfiles
+        enableLocalAI = [bool]$script:WinOptConfig.enableLocalAI
+        language = $script:WinOptConfig.language
+        autoCreateRestorePoint = [bool]$script:WinOptConfig.autoCreateRestorePoint
     }
     $out | ConvertTo-Json -Depth 6 | Set-Content -Path $configPath -Encoding UTF8
 }
@@ -158,7 +170,7 @@ function Confirm-WinOptRisky {
 
 function Ensure-WinOptRestorePoint {
     param([string]$Description = 'WinOptimizer_AutoBackup')
-    if (-not $script:WinOptConfig.requireRestorePointBeforeRisky) { return $true }
+    if (-not $script:WinOptConfig.requireRestorePointBeforeRisky -and -not $script:WinOptConfig.autoCreateRestorePoint) { return $true }
     Write-Host (T 'restore_creating') -ForegroundColor Cyan
     try {
         Enable-ComputerRestore -Drive 'C:\' -ErrorAction SilentlyContinue
@@ -230,6 +242,29 @@ function Test-WinOptStartupRequirements {
     $psVer = $PSVersionTable.PSVersion.ToString()
     Write-WinOptHost "$(T 'req_ok') PowerShell: $psVer" -ForegroundColor Green
     Start-Sleep -Seconds 1
+}
+
+function Get-WinOptSystemProfile {
+    # Smart Profile Detection - Phase 3 Foundation
+    $profile = 'General'
+    try {
+        $cs = Get-CimInstance Win32_ComputerSystem
+        $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
+        $gpu = Get-CimInstance Win32_VideoController | Select-Object -First 1
+        $totalRamGB = [math]::Round((Get-CimInstance Win32_OperatingSystem).TotalVisibleMemorySize / 1MB)
+
+        if ($totalRamGB -ge 32 -and $gpu.Name -match 'NVIDIA|AMD|RTX|RX') {
+            $profile = 'Gaming/HighPerf'
+        } elseif ($cs.Model -match 'Laptop|Notebook|Book' -or $cpu.Name -match 'U |H |HX') {
+            $profile = 'Laptop/BatterySaver'
+        } elseif ($cpu.Name -match 'Xeon|EPYC' -or $totalRamGB -ge 64) {
+            $profile = 'Workstation/Developer'
+        }
+        Write-WinOptLog "Smart Profile detected: $profile"
+    } catch {
+        Write-WinOptLog "Profile detection failed: $_" 'WARN'
+    }
+    return $profile
 }
 
 function Backup-WinOptRegistryValue {
@@ -353,7 +388,7 @@ function Export-WinOptHtmlReport {
     $rows = ''
     foreach ($kv in $ReportData.GetEnumerator()) {
         $raw = if ($kv.Value -is [array]) { ($kv.Value -join ' | ') } else { "$($kv.Value)" }
-        $safe = $raw.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;')
+        $safe = $raw.Replace('&', '&').Replace('<', '<').Replace('>', '>')
         $rows += "<tr><td><b>$($kv.Key)</b></td><td>$safe</td></tr>`n"
     }
     $html = @"
