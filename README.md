@@ -1,100 +1,82 @@
-# WinOptimizer v2.1.0
+# WinOptimizer v2.2.0
 
-**Windows maintenance toolkit** — interactive PowerShell menu, logging, beginner/advanced mode, smart profiles, enhanced diagnostics, rollback, and excellent UX.
+**Advanced Windows Maintenance & Optimization Toolkit**
 
-> **Major v2.1 Improvements Applied**: Smart System Profile Detection, Extended Config, Enhanced Safety & Logging, Arabic Readiness Foundation, Better Health Scoring foundation, and comprehensive documentation.
+WinOptimizer is now a proper **PowerShell Module** with an interactive menu, smart diagnostics, rollback system, and profile detection.
+
+## Installation (Recommended)
+
+```powershell
+# Clone the repository
+git clone https://github.com/aelatar92/WinOptimizer.git
+cd WinOptimizer
+
+# Import as module
+Import-Module .\WinOptimizer.psd1 -Force
+
+# Launch the tool
+Start-WinOptimizer
+```
+
+## Quick Start (Traditional way - still supported)
+
+1. Right-click `Run.bat` → **Run as administrator**
+2. Choose a module from the menu
+
+## New in v2.2
+
+- Converted to a real PowerShell Module (`WinOptimizer.psd1` + `WinOptimizer.psm1`)
+- Better structure and maintainability
+- `Start-WinOptimizer` function as main entry point
+- Improved PSScriptAnalyzer compliance (in progress)
+- Smart Profile Detection
+- Enhanced configuration system
+
+## Core Functions
+
+| Function                    | Description                        |
+|----------------------------|------------------------------------|
+| `Start-WinOptimizer`       | Launches the interactive menu     |
+| `Get-WinOptSystemProfile`  | Detects Gaming / Laptop / etc.    |
+| `Get-WinOptHealthScore`    | Calculates system health score    |
+
+## Configuration
+
+Edit `config.json` to control:
+- UI Mode (beginner/advanced)
+- Smart Profiles
+- Language (future Arabic support)
+- Restore point behavior
+
+## Project Structure (v2.2)
+
+```
+WinOptimizer/
+├── .github/workflows/
+├── Lib/                 # Shared functions
+├── Modules/             # Individual tools (1-15)
+├── Tests/
+├── WinOptimizer.psd1   # Module Manifest
+├── WinOptimizer.psm1   # Root Module
+├── Main.ps1             # Interactive menu (legacy entry)
+├── Run.bat
+├── config.json
+└── README.md
+```
 
 ## Requirements
 
 - Windows 10/11
-- **Administrator** (run `Run.bat` as admin)
 - PowerShell 5.1+
-- **Winget** (for module 5 only)
+- Administrator rights
 
-## Quick start
-
-1. Right-click **`Run.bat`** → **Run as administrator**
-2. Choose a module from the menu (1–17)
-3. Use **15** for UI mode (Beginner/Advanced), rollback, and logs
-
-## What's New in v2.1
-
-- **Smart Profile Detection** (`Get-WinOptSystemProfile`): Automatically detects Gaming/HighPerf, Laptop/BatterySaver, Workstation/Developer, or General and can suggest optimizations.
-- **Extended `config.json`**: New keys for `enableSmartProfiles`, `enableLocalAI`, `language`, `autoCreateRestorePoint`.
-- **Improved Safety**: Restore point logic respects new config, better error handling.
-- **Foundation for Arabic UI**: Translation system ready for full Arabic support.
-- **Enhanced Diagnostics (Module 7)**: Better structure for trends and actionable recommendations.
-- **Better Logging & Config Persistence**: New fields are preserved correctly.
-
-## Modules
-
-| # | Module | Notes |
-|---|--------|-------|
-| 1 | OS cleanup, restore point | Safe & recommended |
-| 2 | SFC, DISM, chkdsk, SSD trim / HDD defrag | Core repair |
-| 3 | Gaming, DNS, privacy tweaks | Use with caution (Advanced mode) |
-| 4 | Store, drivers, audio, print spooler | Repair tools |
-| 5 | Winget install/update/export | App management |
-| 6 | Restore point, Defender, port audit | Security |
-| 7 | Smart Diagnostics & Health Score | **Enhanced in v2.1** - Hybrid rules + recommendations |
-| 8 | Startup programs | Cleanup |
-| 9 | Windows services | Management |
-| 10 | Advanced cleanup | Deep clean |
-| 11 | Network tools | Diagnostics |
-| 12 | Backup & export | Data safety |
-| 13 | Battery Health Report | Laptop focused |
-| 14 | Task scheduler | Automation |
-| 15 | Settings & rollback | **Important** - Mode switching, logs, rollback |
-| 16 | Help | Guide |
-| 17 | Exit | - |
-
-## Folders
-
-| Path | Purpose |
-|------|---------|
-| `config.json` | UI mode, DNS, winget bundles, smart profiles, language |
-| `logs/` | Daily logs |
-| `Data/rollback/` | DNS & registry snapshots + registry backups |
-| `reports/` | HTML health reports |
-
-## Configuration (`config.json`)
-
-Key new options in v2.1:
-
-```json
-{
-  "enableSmartProfiles": true,
-  "enableLocalAI": false,
-  "language": "en",
-  "autoCreateRestorePoint": true
-}
-```
-
-- `enableSmartProfiles`: Activates automatic profile detection on startup.
-- `enableLocalAI`: Placeholder for future optional Ollama/local LLM integration in diagnostics.
-- `language`: Foundation for full Arabic UI (default "en").
-- `autoCreateRestorePoint`: Controls automatic restore point creation before risky actions.
-
-## Tests
-
-```powershell
-Install-Module Pester -Scope CurrentUser -Force
-Invoke-Pester -Path .\Tests\WinOptimizer.Tests.ps1
-```
-
-## Roadmap (Future Phases)
+## Roadmap
 
 - Full Arabic UI support
 - One-click safe fixes from diagnostics
-- Health score history & trends in reports
-- Optional local AI chat for advanced diagnostics
-- PSScriptAnalyzer CI + expanded Pester tests
-- Beautiful TUI with progress bars (Spectre.Console or native improvements)
-
-## Optional: Windows Terminal
-
-Run **`Run-WT.bat`** if you use Windows Terminal (optional; `Run.bat` is the main launcher).
+- Health score history & trends
+- Optional local AI integration
 
 ---
 
-**WinOptimizer v2.1** — Safer. Smarter. Better UX. Ready for the future.
+**WinOptimizer v2.2** — Cleaner. More Professional. Ready for the future.
