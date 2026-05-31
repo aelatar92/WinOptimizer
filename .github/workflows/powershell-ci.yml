@@ -13,14 +13,23 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Setup PowerShell Gallery
+      shell: pwsh
+      run: |
+        Write-Host "Setting up PowerShell Gallery..." -ForegroundColor Cyan
+        Install-PackageProvider -Name NuGet -Force -Scope CurrentUser | Out-Null
+        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted -ErrorAction SilentlyContinue
+
     - name: Install PSScriptAnalyzer
       shell: pwsh
       run: |
+        Write-Host "Installing PSScriptAnalyzer..." -ForegroundColor Cyan
         Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -AllowClobber -SkipPublisherCheck
 
     - name: Install Pester
       shell: pwsh
       run: |
+        Write-Host "Installing Pester..." -ForegroundColor Cyan
         Install-Module -Name Pester -Force -Scope CurrentUser -AllowClobber -SkipPublisherCheck
 
     - name: Run PSScriptAnalyzer (Report Only - v2.2 Development)
