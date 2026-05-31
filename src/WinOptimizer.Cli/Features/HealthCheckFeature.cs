@@ -1,5 +1,6 @@
 using Spectre.Console;
 using WinOptimizer.Cli.Core;
+using WinOptimizer.Cli.Models;
 
 namespace WinOptimizer.Cli.Features;
 
@@ -9,34 +10,69 @@ public class HealthCheckFeature
     {
         AnsiConsole.Clear();
         
-        var rule = new Rule("[bold cyan]System Health Check[/]");
+        var rule = new Rule("[bold cyan]System Health Check (Live)[/]").RuleStyle(Style.Parse("cyan"));
         AnsiConsole.Write(rule);
-        
+
         var scanner = new SystemScanner();
-        
-        var results = await AnsiConsole.Status()
-            .StartAsync("Performing live system scan...", async ctx =>
+        SystemHealthReport report = new();
+
+        await AnsiConsole.Status()
+            .StartAsync("Performing comprehensive system scan...", async ctx =>
             {
-                var progress = new Progress<string>(status => 
-                {
-                    ctx.Status(status);
-                });
-                
-                return await scanner.ScanSystemAsync(progress);
+                var progress = new Progress<string>(status => ctx.Status(status));
+                var scanResults = await scanner.ScanSystemAsync(progress);
+
+                // Populate report
+                report.HealthScore = CalculateHealthScore(scanResults);
+                report.CpuStatus = $"Cores: {Environment.ProcessorCount}";
+                report.MemoryStatus = $"Used: {scanResults.GetValueOrDefault("RAM_Used_MB", 0)} MB";
+                report.DiskStatus = $"Free: {scanResults.GetValueOrDefault("C_Free_GB", 0)} GB on C:\";
+
+                if (report.HealthScore < 70)
+                    report.Recommendations.Add("Consider running Disk Cleanup");
+                if (report.HealthScore < 50)
+                    report.Recommendations.Add("High memory usage detected - check startup programs");
             });
 
-        // Display results in a nice table
+        // Display beautiful report
+        DisplayHealthReport(report);
+    }
+
+    private int CalculateHealthScore(Dictionary<string, object> results)
+    {
+        // Simple scoring logic (can be expanded)
+        int score = 100;
+
+        if (results.TryGetValue("C_Free_GB", out var freeGb) && freeGb is double free && free < 20)
+            score -= 25;
+
+        return Math.Max(score, 0);
+    }
+
+    private void DisplayHealthReport(SystemHealthReport report)
+    {
         var table = new Table()
             .Border(TableBorder.Rounded)
-            .AddColumn("Component")
-            .AddColumn("Value");
+            .Title($"[bold]Health Score: {report.HealthScore}/100[/]")
+            .AddColumn("Metric")
+            .AddColumn("Status");
 
-        foreach (var item in results)
-        {
-            table.AddRow(item.Key, item.Value.ToString() ?? "N/A");
-        }
+        table.AddRow("CPU", report.CpuStatus);
+        table.AddRow("Memory", report.MemoryStatus);
+        table.AddRow("Disk C:\", report.DiskStatus);
 
         AnsiConsole.Write(table);
-        AnsiConsole.MarkupLine("\n[green]Health check completed successfully![/]");
+
+        if (report.Recommendations.Any())
+        {
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine("[yellow]Recommendations:[/]");
+            foreach (var rec in report.Recommendations)
+            {
+                AnsiConsole.MarkupLine($"  • {rec}");
+            }
+        }
+
+        AnsiConsole.MarkupLine("\n[green]Scan completed successfully.[/]");
     }
 }
