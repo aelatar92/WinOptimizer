@@ -24,8 +24,9 @@ class Program
                         "[2] System Information",
                         "[3] Disk Cleanup with Progress",
                         "[4] Startup Programs Manager",
-                        "[5] Windows Services Manager (Coming soon)",
-                        "[6] Exit"
+                        "[5] Windows Services Manager",
+                        "[6] About / Version",
+                        "[7] Exit"
                     }));
 
             switch (choice)
@@ -46,11 +47,15 @@ class Program
                     new StartupManagerFeature().Run();
                     break;
 
-                case "[5] Windows Services Manager (Coming soon)":
-                    AnsiConsole.MarkupLine("[yellow]This feature will be available soon.[/]");
+                case "[5] Windows Services Manager":
+                    new ServicesManagerFeature().Run();
                     break;
 
-                case "[6] Exit":
+                case "[6] About / Version":
+                    ShowAbout();
+                    break;
+
+                case "[7] Exit":
                     AnsiConsole.MarkupLine("[bold green]Thank you for using WinOptimizer v3.0![/]");
                     return;
             }
@@ -66,7 +71,22 @@ class Program
         var rule = new Rule("[bold yellow]WinOptimizer v3.0[/]") { Style = Style.Parse("yellow") };
         AnsiConsole.Write(rule);
 
-        AnsiConsole.MarkupLine("[grey]Modern CLI • Live Feedback • Clean Architecture[/]");
+        AnsiConsole.MarkupLine("[grey]Modern CLI • Live Feedback • Clean Architecture • v3.0[/]");
         AnsiConsole.WriteLine();
+    }
+
+    static void ShowAbout()
+    {
+        AnsiConsole.Clear();
+        var panel = new Panel(
+            "[bold]WinOptimizer v3.0[/]\n" +
+            "Complete rewrite in C# with Spectre.Console\n\n" +
+            "[grey]This is a modern, interactive CLI tool for Windows optimization.[/]\n" +
+            "[grey]Built with live feedback and clean architecture in mind.[/]"
+        )
+        .Header("About", Justify.Center)
+        .Border(BoxBorder.Rounded);
+
+        AnsiConsole.Write(panel);
     }
 }
