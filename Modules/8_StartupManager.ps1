@@ -4,11 +4,11 @@ Initialize-WinOptModule -ModuleName 'StartupManager'
 
 function Show-Startup-Menu {
     Clear-Host
-    Write-Host '=== Startup Manager ===' -ForegroundColor Yellow
-    Write-Host '1. List startup items' -ForegroundColor White
-    Write-Host '2. Disable item' -ForegroundColor White
-    Write-Host '3. Restore via Settings (registry backup)' -ForegroundColor White
-    Write-Host '4. Back' -ForegroundColor Red
+    Write-WinOptHost '=== Startup Manager ===' -ForegroundColor Yellow
+    Write-WinOptHost '1. List startup items' -ForegroundColor White
+    Write-WinOptHost '2. Disable item' -ForegroundColor White
+    Write-WinOptHost '3. Restore via Settings (registry backup)' -ForegroundColor White
+    Write-WinOptHost '4. Back' -ForegroundColor Red
 }
 
 function Get-StartupItems {
@@ -37,7 +37,7 @@ do {
     switch ($c) {
         '1' {
             $list = Get-StartupItems
-            if (-not $list) { Write-Host 'No items.' -ForegroundColor Gray; break }
+            if (-not $list) { Write-WinOptHost 'No items.' -ForegroundColor Gray; break }
             $list | Format-Table Id, Name, Command -AutoSize
             Write-WinOptLog "Listed $($list.Count) startup items"
         }
@@ -49,12 +49,12 @@ do {
             if ($item -and (Confirm-WinOptRisky "Disable startup: $($item.Name)")) {
                 Backup-WinOptRegistryValue -Path $item.Hive -Name $item.Name -Label "startup_$($item.Name)"
                 Remove-ItemProperty -Path $item.Hive -Name $item.Name -Force
-                Write-Host 'Disabled.' -ForegroundColor Green
+                Write-WinOptHost 'Disabled.' -ForegroundColor Green
                 Write-WinOptLog "Disabled startup $($item.Name)"
             }
         }
         '3' {
-            Write-Host 'Use Main Menu > 15 Settings > Restore registry from backup.' -ForegroundColor Cyan
+            Write-WinOptHost 'Use Main Menu > 15 Settings > Restore registry from backup.' -ForegroundColor Cyan
         }
         '4' { break }
     }
