@@ -1,21 +1,17 @@
 # WinOptimizer v2.2.0 - Root Module
-# Professional PowerShell Module structure
+# Full PowerShell Module structure for WinOptimizer
 
 $script:ModuleRoot = $PSScriptRoot
 
-# Dot-source the core library
+# Load core shared functions
 $commonPath = Join-Path $ModuleRoot 'Lib\Common.ps1'
 if (Test-Path $commonPath) {
     . $commonPath
-    Write-Verbose "[WinOptimizer] Core library loaded."
 }
 
-# Main launcher function
-<#
+< #
 .SYNOPSIS
-    Launches the WinOptimizer interactive menu.
-.DESCRIPTION
-    Starts the full interactive optimization toolkit.
+    Main entry point for WinOptimizer interactive tool.
 #>
 function Start-WinOptimizer {
     [CmdletBinding()]
@@ -26,26 +22,24 @@ function Start-WinOptimizer {
     $mainScript = Join-Path $ModuleRoot 'Main.ps1'
 
     if (-not (Test-Path $mainScript)) {
-        Write-Error "Main.ps1 not found in module root."
+        Write-Error "Main.ps1 not found. The module may be corrupted."
         return
     }
 
     if (-not $NoLogo) {
-        Write-Host "WinOptimizer v$script:WinOptVersion - Starting..." -ForegroundColor Cyan
+        Write-Host "WinOptimizer v2.2.0 - Interactive Windows Optimization Toolkit" -ForegroundColor Cyan
+        Write-Host "Type 'exit' or press Ctrl+C to quit at any time." -ForegroundColor DarkGray
+        Write-Host ""
     }
 
-    # Execute the main interactive script
     & $mainScript
 }
 
-# Export public functions
+# Export useful public functions
 Export-ModuleMember -Function @(
     'Start-WinOptimizer',
     'Get-WinOptSystemProfile',
     'Get-WinOptHealthScore'
 )
 
-# Optional: Auto-load message when imported
-if ($MyInvocation.InvocationName -eq '.') {
-    Write-Verbose "WinOptimizer module loaded successfully. Use 'Start-WinOptimizer' to begin."
-}
+Write-Verbose "[WinOptimizer] Module v2.2.0 loaded successfully."
