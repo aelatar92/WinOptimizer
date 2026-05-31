@@ -13,11 +13,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup PowerShell Gallery
+    - name: Setup PSGallery
       shell: pwsh
       run: |
-        Write-Host "Setting up PowerShell Gallery..." -ForegroundColor Cyan
-        Install-PackageProvider -Name NuGet -Force -Scope CurrentUser | Out-Null
+        Write-Host "Ensuring PSGallery is registered and trusted..." -ForegroundColor Cyan
+        if (-not (Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) {
+            Register-PSRepository -Default -ErrorAction SilentlyContinue
+        }
         Set-PSRepository -Name PSGallery -InstallationPolicy Trusted -ErrorAction SilentlyContinue
 
     - name: Install PSScriptAnalyzer
