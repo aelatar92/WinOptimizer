@@ -1,4 +1,5 @@
 using Spectre.Console;
+using WinOptimizer.Cli.Core;
 using WinOptimizer.Cli.Features;
 
 namespace WinOptimizer.Cli;
@@ -9,59 +10,68 @@ class Program
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        while (true)
+        try
         {
-            AnsiConsole.Clear();
-            ShowHeader();
-
-            var choice = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("[bold yellow]Main Menu[/]")
-                    .PageSize(12)
-                    .HighlightStyle(new Style(foreground: Color.Cyan1))
-                    .AddChoices(new[] {
-                        "[1] System Health Check (Live Scan)",
-                        "[2] System Information",
-                        "[3] Disk Cleanup with Progress",
-                        "[4] Startup Programs Manager",
-                        "[5] Windows Services Manager",
-                        "[6] About / Version",
-                        "[7] Exit"
-                    }));
-
-            switch (choice)
+            while (true)
             {
-                case "[1] System Health Check (Live Scan)":
-                    await new HealthCheckFeature().RunAsync();
-                    break;
+                AnsiConsole.Clear();
+                ShowHeader();
 
-                case "[2] System Information":
-                    new SystemInfoFeature().Run();
-                    break;
+                var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("[bold yellow]Main Menu[/]")
+                        .PageSize(12)
+                        .HighlightStyle(new Style(foreground: Color.Cyan1))
+                        .AddChoices(new[] {
+                            "[1] System Health Check (Live Scan)",
+                            "[2] System Information",
+                            "[3] Disk Cleanup with Progress",
+                            "[4] Startup Programs Manager",
+                            "[5] Windows Services Manager",
+                            "[6] About / Version",
+                            "[7] Exit"
+                        }));
 
-                case "[3] Disk Cleanup with Progress":
-                    await new DiskCleanupFeature().RunAsync();
-                    break;
+                switch (choice)
+                {
+                    case "[1] System Health Check (Live Scan)":
+                        await new HealthCheckFeature().RunAsync();
+                        break;
 
-                case "[4] Startup Programs Manager":
-                    new StartupManagerFeature().Run();
-                    break;
+                    case "[2] System Information":
+                        new SystemInfoFeature().Run();
+                        break;
 
-                case "[5] Windows Services Manager":
-                    new ServicesManagerFeature().Run();
-                    break;
+                    case "[3] Disk Cleanup with Progress":
+                        await new DiskCleanupFeature().RunAsync();
+                        break;
 
-                case "[6] About / Version":
-                    ShowAbout();
-                    break;
+                    case "[4] Startup Programs Manager":
+                        new StartupManagerFeature().Run();
+                        break;
 
-                case "[7] Exit":
-                    AnsiConsole.MarkupLine("[bold green]Thank you for using WinOptimizer v3.0![/]");
-                    return;
+                    case "[5] Windows Services Manager":
+                        new ServicesManagerFeature().Run();
+                        break;
+
+                    case "[6] About / Version":
+                        ShowAbout();
+                        break;
+
+                    case "[7] Exit":
+                        Logger.Success("Thank you for using WinOptimizer v3.0!");
+                        return;
+                }
+
+                AnsiConsole.WriteLine();
+                AnsiConsole.MarkupLine("[grey italic]Press any key to return to the main menu...[/]");
+                Console.ReadKey(true);
             }
-
-            AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[grey italic]Press any key to return to the main menu...[/]");
+        }
+        catch (Exception ex)
+        {
+            Logger.Error($"An unexpected error occurred: {ex.Message}");
+            AnsiConsole.MarkupLine("[red]The application will now exit.[/]");
             Console.ReadKey(true);
         }
     }
@@ -81,8 +91,8 @@ class Program
         var panel = new Panel(
             "[bold]WinOptimizer v3.0[/]\n" +
             "Complete rewrite in C# with Spectre.Console\n\n" +
-            "[grey]This is a modern, interactive CLI tool for Windows optimization.[/]\n" +
-            "[grey]Built with live feedback and clean architecture in mind.[/]"
+            "[grey]Modern interactive CLI for Windows optimization.[/]\n" +
+            "[grey]Built with live feedback, clean architecture, and extensibility in mind.[/]"
         )
         .Header("About", Justify.Center)
         .Border(BoxBorder.Rounded);
