@@ -13,10 +13,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup PSGallery
+    - name: Setup PowerShell Gallery
       shell: pwsh
       run: |
-        Write-Host "Ensuring PSGallery is registered and trusted..." -ForegroundColor Cyan
+        Write-Host "Setting up PowerShell Gallery..." -ForegroundColor Cyan
+        # Ensure PSGallery is registered and trusted
         if (-not (Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) {
             Register-PSRepository -Default -ErrorAction SilentlyContinue
         }
