@@ -1,0 +1,45 @@
+name: PowerShell CI
+
+on:
+  push:
+    branches: [ main, v2.1-smart-ux-safety ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install PSScriptAnalyzer
+      shell: pwsh
+      run: |
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -AllowClobber -SkipPublisherCheck
+
+    - name: Install Pester
+      shell: pwsh
+      run: |
+        Install-Module -Name Pester -Force -Scope CurrentUser -AllowClobber -SkipPublisherCheck
+
+    - name: Run PSScriptAnalyzer (Linting)
+      shell: pwsh
+      run: |
+        Write-Host "Running PSScriptAnalyzer..." -ForegroundColor Cyan
+        $results = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning,Error
+        if ($results) {
+          $results | Format-Table -AutoSize
+          exit 1
+        }
+        Write-Host "No linting issues found." -ForegroundColor Green
+
+    - name: Run Pester Tests
+      shell: pwsh
+      run: |
+        Write-Host "Running Pester tests..." -ForegroundColor Cyan
+        $config = New-PesterConfiguration
+        $config.Run.Path = '.\Tests'
+        $config.Output.Verbosity = 'Detailed'
+        $config.Should.ErrorAction = 'Stop'
+        Invoke-Pester -Configuration $config
