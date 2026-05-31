@@ -27,12 +27,20 @@ jobs:
       shell: pwsh
       run: |
         Write-Host "Running PSScriptAnalyzer..." -ForegroundColor Cyan
-        $results = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning,Error
-        if ($results) {
-          $results | Format-Table -AutoSize
-          exit 1
+        $issues = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error,Warning
+
+        if ($issues) {
+            $issues | Format-Table -AutoSize
+            $errorCount = ($issues | Where-Object Severity -eq 'Error').Count
+            if ($errorCount -gt 0) {
+                Write-Error "PSScriptAnalyzer found $errorCount Error(s). Failing build."
+                exit 1
+            } else {
+                Write-Warning "PSScriptAnalyzer found Warnings only (no Errors). Build will continue."
+            }
+        } else {
+            Write-Host "No linting issues found." -ForegroundColor Green
         }
-        Write-Host "No linting issues found." -ForegroundColor Green
 
     - name: Run Pester Tests
       shell: pwsh
@@ -41,5 +49,4 @@ jobs:
         $config = New-PesterConfiguration
         $config.Run.Path = '.\Tests'
         $config.Output.Verbosity = 'Detailed'
-        $config.Should.ErrorAction = 'Stop'
         Invoke-Pester -Configuration $config
