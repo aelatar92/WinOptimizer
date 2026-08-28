@@ -1,6 +1,6 @@
 # WinOptimizer v2.0
 
-Windows maintenance toolkit — interactive PowerShell menu, logging, beginner mode, and 17 modules.
+Windows maintenance toolkit — interactive PowerShell menu (or an optional WPF GUI), logging, beginner mode, real AI diagnostics via Claude, and 16 modules.
 
 ## Requirements
 
@@ -60,6 +60,14 @@ Module 7 ("Smart Diagnostics") has a genuine AI-powered option (`[5] Ask Claude 
 
 This is a paid API — check [Anthropic's pricing](https://www.anthropic.com/pricing) for the model you pick. Everything else in WinOptimizer keeps working exactly as before if you never touch this; `enableClaudeAI` defaults to `false`.
 
+## GUI (experimental)
+
+Right-click **`RunGui.bat`** → **Run as administrator** for a WPF window instead of the console menu: click any of the 16 module buttons to launch that module in its own console window (unchanged, same as running it from the text menu), or use the **Settings** button for a full graphical settings dialog (UI mode, language, rollback actions, and the Claude AI panel — API key, enable toggle, model picker) instead of typing numbers. A language button switches English/Arabic instantly, including right-to-left layout.
+
+`Run.bat` / `Main.ps1` (the console menu) are untouched and remain the primary, fully-tested way to use WinOptimizer — the GUI is an additional opt-in entry point under `Gui\`, not a replacement.
+
+> **Known limitation:** this GUI was written and validated (PowerShell syntax + XAML well-formedness, both checked by the test suite) on a Linux dev machine, which has no WPF runtime to actually render or click-test it on. It has not been visually verified yet. If a window fails to open, a button doesn't do what it says, or anything looks broken, please report it with the exact error text — it'll be fixed immediately.
+
 ## Folders
 
 | Path | Purpose |
@@ -68,6 +76,7 @@ This is a paid API — check [Anthropic's pricing](https://www.anthropic.com/pri
 | `logs/` | Daily logs |
 | `Data/rollback/` | DNS & registry snapshots |
 | `reports/` | HTML health reports |
+| `Gui/` | WPF GUI launcher (`RunGui.bat`) |
 
 ## Tests
 

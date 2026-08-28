@@ -18,7 +18,8 @@ Describe 'WinOptimizer PowerShell syntax' {
         'Modules\7_AIDiagnostics.ps1', 'Modules\8_StartupManager.ps1', 'Modules\9_WindowsServices.ps1',
         'Modules\10_AdvancedCleanup.ps1', 'Modules\11_NetworkTools.ps1', 'Modules\12_BackupExport.ps1',
         'Modules\13_BatteryHealth.ps1', 'Modules\14_Scheduler.ps1', 'Modules\15_Settings.ps1',
-        'Modules\16_SmartProfiles.ps1'
+        'Modules\16_SmartProfiles.ps1',
+        'Gui\GuiCommon.ps1', 'Gui\MainWindow.ps1', 'Gui\SettingsWindow.ps1'
     )
     BeforeAll {
         $script:projectRoot = Split-Path $PSScriptRoot -Parent
@@ -121,6 +122,24 @@ Describe 'WinOptimizer HTML report export' {
         $content | Should -Match 'Test Report'
         $content | Should -Match '&lt;script&gt;'
         $content | Should -Not -Match '<script>alert'
+    }
+}
+
+Describe 'WinOptimizer GUI XAML validity' {
+    $guiFiles = @('Gui\MainWindow.ps1', 'Gui\SettingsWindow.ps1')
+    BeforeAll {
+        $script:projectRoot = Split-Path $PSScriptRoot -Parent
+    }
+    It 'embedded XAML in <_> is well-formed XML' -ForEach $guiFiles {
+        $full = Join-Path $script:projectRoot $_
+        $tokens = $null
+        $errs = $null
+        [void][System.Management.Automation.Language.Parser]::ParseFile($full, [ref]$tokens, [ref]$errs)
+        $hereStrings = @($tokens | Where-Object { $_.Kind -eq 'HereStringExpandable' -or $_.Kind -eq 'HereStringLiteral' })
+        $hereStrings.Count | Should -BeGreaterThan 0
+        foreach ($hs in $hereStrings) {
+            { [xml]$hs.Value } | Should -Not -Throw
+        }
     }
 }
 
