@@ -58,6 +58,10 @@ Switch between English and Arabic from **Settings (16) → 7**. The setting is s
 
 Module 15 applies a curated bundle of existing tools in one step: a Gaming profile (Ultimate Performance plan + low-latency tweaks + cache clear), Battery Saver, Privacy/Clean, and Developer (installs the `wingetBundles.developer` apps from `config.json`). Disable it by setting `enableSmartProfiles` to `false` in `config.json`.
 
+## Audit report
+
+**Settings (16) → 11** generates an HTML report of what WinOptimizer has actually done, drawn from every log file in `logs\`. It filters out pure session/navigation bookkeeping (session start, module entry, read-only scans) and keeps everything else — every logged action, warning, and error — so it answers "what did this tool actually change on my PC," not just "what did I click."
+
 ## Local AI (free, offline diagnostics via Ollama)
 
 Module 4 ("Smart Diagnostics") has a genuine AI-powered option (`[5] Ask Local AI for a real expert analysis`) alongside the original rule-based checks. It sends a small JSON snapshot of your PC (OS, CPU/RAM load, free disk %, uptime, pending-reboot flag, and a few recent System log error messages — no personal files or browsing data) to a model running entirely on your own PC via [Ollama](https://ollama.com), and prints back a prioritized, plain-English diagnosis — no API key, no per-request cost, no internet needed after the model is downloaded.

@@ -63,7 +63,8 @@ $script:WinOptStrings = @{
         settings_8           = '8. Local AI (Ollama - free, offline, no API key)'
         settings_9           = '9. Export settings profile'
         settings_10          = '10. Import settings profile'
-        settings_11          = '11. Back'
+        settings_11          = '11. Generate audit report (what WinOptimizer did)'
+        settings_12          = '12. Back'
         profiles_title       = '=== Smart Profiles ==='
         profiles_disabled    = 'Smart Profiles are disabled in config.json (enableSmartProfiles=false).'
         profiles_gaming      = '1. Gaming Profile (Ultimate Performance + Gaming tweaks + clear game cache)'
@@ -151,7 +152,8 @@ $script:WinOptStrings = @{
         settings_8           = '8. الذكاء الاصطناعي المحلي (Ollama - مجاني وأوفلاين، بدون مفتاح API)'
         settings_9           = '9. تصدير ملف الإعدادات'
         settings_10          = '10. استيراد ملف الإعدادات'
-        settings_11          = '11. رجوع'
+        settings_11          = '11. إنشاء تقرير تدقيق (إيه اللي عمله WinOptimizer)'
+        settings_12          = '12. رجوع'
         profiles_title       = '=== البروفايلات الذكية ==='
         profiles_disabled    = 'البروفايلات الذكية معطّلة في config.json (enableSmartProfiles=false).'
         profiles_gaming      = '1. بروفايل الألعاب (أعلى أداء + تعديلات ألعاب + تنظيف كاش الألعاب)'
@@ -562,6 +564,39 @@ th{background:#161b22}h1{color:#58a6ff}</style></head><body>
     Set-Content -Path $file -Value $html -Encoding UTF8
     Write-Host "$(T 'html_report_saved') $file" -ForegroundColor Green
     Write-WinOptLog "HTML report: $file"
+    return $file
+}
+
+function Export-WinOptAuditReport {
+    param([Parameter(Mandatory)][string[]]$Lines)
+    $reportsDir = Join-Path $script:WinOptRoot 'reports'
+    if (-not (Test-Path $reportsDir)) { New-Item $reportsDir -ItemType Directory -Force | Out-Null }
+    $file = Join-Path $reportsDir ("AuditReport_{0:yyyyMMdd_HHmmss}.html" -f (Get-Date))
+    $rows = ''
+    foreach ($line in $Lines) {
+        if ($line -match '^\[(?<ts>[^\]]+)\]\s\[(?<level>[^\]]+)\]\s\[(?<module>[^\]]+)\]\s(?<msg>.*)$') {
+            $ts = $Matches.ts; $level = $Matches.level; $module = $Matches.module; $msg = $Matches.msg
+        } else {
+            $ts = ''; $level = ''; $module = ''; $msg = $line
+        }
+        $escTs = $ts.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;')
+        $escLevel = $level.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;')
+        $escModule = $module.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;')
+        $escMsg = $msg.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;')
+        $levelColor = switch ($level) { 'ERROR' { '#f85149' } 'WARN' { '#d29922' } default { '#8b949e' } }
+        $rows += "<tr><td>$escTs</td><td style='color:$levelColor'>$escLevel</td><td>$escModule</td><td>$escMsg</td></tr>`n"
+    }
+    $html = @"
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>WinOptimizer Audit Report</title>
+<style>body{font-family:Segoe UI,Arial;margin:2rem;background:#0f1419;color:#e6edf3}
+table{border-collapse:collapse;width:100%}td,th{border:1px solid #30363d;padding:6px 10px;text-align:left;font-size:13px;vertical-align:top}
+th{background:#161b22}h1{color:#58a6ff}</style></head><body>
+<h1>WinOptimizer Audit Report</h1><p>Generated $(Get-Date) - $($Lines.Count) entries (session bookkeeping filtered out; see Settings for the filter list)</p>
+<table><tr><th>Time</th><th>Level</th><th>Module</th><th>What happened</th></tr>$rows</table></body></html>
+"@
+    Set-Content -Path $file -Value $html -Encoding UTF8
+    Write-WinOptLog "Audit report generated: $file"
     return $file
 }
 

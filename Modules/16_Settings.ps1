@@ -15,7 +15,8 @@ function Show-Settings-Menu {
     Write-Host (T 'settings_8') -ForegroundColor White
     Write-Host (T 'settings_9') -ForegroundColor White
     Write-Host (T 'settings_10') -ForegroundColor White
-    Write-Host (T 'settings_11') -ForegroundColor Red
+    Write-Host (T 'settings_11') -ForegroundColor White
+    Write-Host (T 'settings_12') -ForegroundColor Red
 }
 
 function Show-LocalAI-Settings {
@@ -139,7 +140,43 @@ do {
             Write-Host "Settings profile imported from $in" -ForegroundColor Green
             Write-WinOptLog "Settings profile imported from $in"
         }
-        '11' { break }
+        '11' {
+            $logDir = Join-Path $WinOptRoot 'logs'
+            $logFiles = @(Get-ChildItem -Path $logDir -Filter '*.log' -ErrorAction SilentlyContinue | Sort-Object Name)
+            if ($logFiles.Count -eq 0) {
+                Write-Host 'No logs found yet.' -ForegroundColor Yellow
+                break
+            }
+            $allLines = @()
+            foreach ($f in $logFiles) { $allLines += @(Get-Content -Path $f.FullName -ErrorAction SilentlyContinue) }
+
+            # Pure session/navigation bookkeeping carries no action content, so it's
+            # excluded here to keep the report to actual activity. Every other
+            # Write-WinOptLog call in the codebase represents an attempted or
+            # completed action, a warning, or an error, and is kept.
+            $noisePatterns = @(
+                'Session started', 'Module entered:', '\] OS: ', 'Application exit',
+                'Tray monitor started', 'Listed \d+ startup items', '\] Ping ',
+                'Disk space analysis (started|complete)', 'Duplicate scan started'
+            )
+            $filtered = foreach ($line in $allLines) {
+                $isNoise = $false
+                foreach ($pattern in $noisePatterns) {
+                    if ($line -match $pattern) { $isNoise = $true; break }
+                }
+                if (-not $isNoise) { $line }
+            }
+            $filtered = @($filtered)
+
+            if ($filtered.Count -eq 0) {
+                Write-Host 'No activity to report (only session bookkeeping found in the logs).' -ForegroundColor Gray
+            } else {
+                $path = Export-WinOptAuditReport -Lines $filtered
+                Write-Host "Audit report generated: $path ($($filtered.Count) entries)" -ForegroundColor Green
+                Start-Process $path
+            }
+        }
+        '12' { break }
     }
-    if ($c -ne '11' -and $c -ne '8') { Wait-WinOptEnter }
-} while ($c -ne '11')
+    if ($c -ne '12' -and $c -ne '8') { Wait-WinOptEnter }
+} while ($c -ne '12')
