@@ -103,7 +103,7 @@ Run **`Run-WT.bat`** if you use Windows Terminal (optional; `Run.bat` is the mai
 
 ## Releases / packaging
 
-Tagged releases are packaged and published automatically by `.github/workflows/release.yml`: it stages the end-user files (`Main.ps1`, `Run.bat`, `Run-WT.bat`, `RunGui.bat`, `Lib/`, `Modules/`, `Gui/`, `config.json`, `README.md` — `Tests/`, `.github/`, and the maintainer-only `publish-github.ps1` are left out), zips them, and publishes them as a GitHub Release asset.
+Tagged releases are packaged and published automatically by `.github/workflows/release.yml`: it stages the end-user files (`Main.ps1`, `Run.bat`, `Run-WT.bat`, `RunGui.bat`, `Lib/`, `Modules/`, `Gui/`, `config.json`, `README.md` — `Tests/` and `.github/` are left out), zips them, and publishes them as a GitHub Release asset.
 
 **To cut a release:**
 1. Bump the version in both `config.json` (`"version"`) and `Lib/Common.ps1` (`$script:WinOptVersion`) — they must match.
