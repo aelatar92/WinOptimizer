@@ -701,9 +701,11 @@ function Invoke-WinOptClaudeAI {
 
 function Test-WinOptOllamaReachable {
     try {
-        Invoke-RestMethod -Uri 'http://localhost:11434/api/tags' -TimeoutSec 2 -ErrorAction Stop | Out-Null
+        Invoke-RestMethod -Uri 'http://localhost:11434/api/tags' -TimeoutSec 5 -ErrorAction Stop | Out-Null
+        $script:WinOptLastOllamaError = $null
         return $true
     } catch {
+        $script:WinOptLastOllamaError = $_.Exception.Message
         return $false
     }
 }

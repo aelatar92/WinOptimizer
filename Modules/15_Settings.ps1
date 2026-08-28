@@ -100,6 +100,7 @@ function Show-LocalAI-Settings {
                     Write-Host (T 'localai_test_ok') -ForegroundColor Green
                 } else {
                     Write-Host "$(T 'localai_test_fail') $($script:WinOptConfig.localAIModel)" -ForegroundColor Yellow
+                    if ($script:WinOptLastOllamaError) { Write-Host "Details: $script:WinOptLastOllamaError" -ForegroundColor DarkGray }
                 }
             }
             '4' { return }

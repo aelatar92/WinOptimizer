@@ -203,7 +203,8 @@ function Show-WinOptSettingsWindow {
         if (Test-WinOptOllamaReachable) {
             Show-WinOptInfo -Message 'Ollama is reachable at localhost:11434. Ready to use.'
         } else {
-            Show-WinOptWarning -Message 'Could not reach Ollama at http://localhost:11434. Install it from https://ollama.com and make sure it is running.'
+            $detail = if ($script:WinOptLastOllamaError) { "`n`nDetails: $script:WinOptLastOllamaError" } else { '' }
+            Show-WinOptWarning -Message "Could not reach Ollama at http://localhost:11434. Install it from https://ollama.com and make sure it is running.$detail"
         }
         Update-WinOptLocalAIStatusText
     }.GetNewClosure())
