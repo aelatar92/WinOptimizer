@@ -74,6 +74,15 @@ Describe 'WinOptimizer Common library - config and i18n' {
         (T 'this_key_does_not_exist') | Should -Be 'this_key_does_not_exist'
     }
 
+    It 'every i18n key exists in both the en and ar tables' {
+        $enKeys = $script:WinOptStrings['en'].Keys
+        $arKeys = $script:WinOptStrings['ar'].Keys
+        $missingFromAr = @($enKeys | Where-Object { $_ -notin $arKeys })
+        $missingFromEn = @($arKeys | Where-Object { $_ -notin $enKeys })
+        $missingFromAr | Should -BeNullOrEmpty -Because "these keys exist in 'en' but not 'ar': $($missingFromAr -join ', ')"
+        $missingFromEn | Should -BeNullOrEmpty -Because "these keys exist in 'ar' but not 'en': $($missingFromEn -join ', ')"
+    }
+
     It 'Test-WinOptModuleAllowed allows everything in advanced mode' {
         $script:WinOptMode = 'advanced'
         Test-WinOptModuleAllowed -ModuleNumber 9 | Should -Be $true
