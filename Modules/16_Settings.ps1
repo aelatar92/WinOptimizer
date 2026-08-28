@@ -13,7 +13,9 @@ function Show-Settings-Menu {
     Write-Host (T 'settings_6') -ForegroundColor White
     Write-Host (T 'settings_7') -ForegroundColor White
     Write-Host (T 'settings_8') -ForegroundColor White
-    Write-Host (T 'settings_9') -ForegroundColor Red
+    Write-Host (T 'settings_9') -ForegroundColor White
+    Write-Host (T 'settings_10') -ForegroundColor White
+    Write-Host (T 'settings_11') -ForegroundColor Red
 }
 
 function Show-LocalAI-Settings {
@@ -104,7 +106,40 @@ do {
             Write-Host "Language / اللغة: $($script:WinOptConfig.language)" -ForegroundColor Green
         }
         '8' { Show-LocalAI-Settings }
-        '9' { break }
+        '9' {
+            $exportDir = Join-Path $WinOptRoot 'Data\exports'
+            if (-not (Test-Path $exportDir)) { New-Item $exportDir -ItemType Directory -Force | Out-Null }
+            $default = Join-Path $exportDir "winopt_profile_$(Get-Date -Format 'yyyyMMdd_HHmmss').json"
+            $out = Read-Host "Export path (default: $default)"
+            if (-not $out) { $out = $default }
+            try {
+                $script:WinOptConfig | ConvertTo-Json -Depth 8 | Set-Content -Path $out -Encoding UTF8
+                Write-Host "Settings profile exported: $out" -ForegroundColor Green
+                Write-WinOptLog "Settings profile exported to $out"
+            } catch {
+                Write-Host "Export failed: $_" -ForegroundColor Red
+            }
+        }
+        '10' {
+            $in = Read-Host 'Full path to a settings profile JSON to import'
+            if (-not $in -or -not (Test-Path $in)) { Write-Host 'File not found.' -ForegroundColor Red; break }
+            try {
+                $imported = Get-Content $in -Raw -Encoding UTF8 | ConvertFrom-Json
+            } catch {
+                Write-Host "Not a valid settings profile: $_" -ForegroundColor Red
+                break
+            }
+            if (-not (Confirm-WinOptRisky "Import settings from $in? This overwrites your current WinOptimizer settings.")) { break }
+            foreach ($prop in $imported.PSObject.Properties) {
+                if ($prop.Name -eq 'version') { continue }
+                $script:WinOptConfig[$prop.Name] = $prop.Value
+            }
+            $script:WinOptMode = if ($script:WinOptConfig.uiMode -in @('beginner', 'advanced')) { $script:WinOptConfig.uiMode } else { 'advanced' }
+            Save-WinOptConfig
+            Write-Host "Settings profile imported from $in" -ForegroundColor Green
+            Write-WinOptLog "Settings profile imported from $in"
+        }
+        '11' { break }
     }
-    if ($c -ne '9' -and $c -ne '8') { Wait-WinOptEnter }
-} while ($c -ne '9')
+    if ($c -ne '11' -and $c -ne '8') { Wait-WinOptEnter }
+} while ($c -ne '11')
