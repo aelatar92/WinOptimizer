@@ -13,12 +13,12 @@
 Describe 'WinOptimizer PowerShell syntax' {
     $files = @(
         'Main.ps1', 'Lib\Common.ps1',
-        'Modules\1_OptimizeOS.ps1', 'Modules\2_DiskTools.ps1', 'Modules\3_AdvancedTools.ps1',
-        'Modules\4_DriversRepair.ps1', 'Modules\5_SilentInstaller.ps1', 'Modules\6_SecurityBackup.ps1',
-        'Modules\7_AIDiagnostics.ps1', 'Modules\8_StartupManager.ps1', 'Modules\9_WindowsServices.ps1',
-        'Modules\10_AdvancedCleanup.ps1', 'Modules\11_NetworkTools.ps1', 'Modules\12_BackupExport.ps1',
-        'Modules\13_BatteryHealth.ps1', 'Modules\14_Scheduler.ps1', 'Modules\15_Settings.ps1',
-        'Modules\16_SmartProfiles.ps1',
+        'Modules\1_OptimizeOS.ps1', 'Modules\2_AdvancedCleanup.ps1', 'Modules\3_DiskTools.ps1',
+        'Modules\4_AIDiagnostics.ps1', 'Modules\5_BatteryHealth.ps1', 'Modules\6_StartupManager.ps1',
+        'Modules\7_WindowsServices.ps1', 'Modules\8_DriversRepair.ps1', 'Modules\9_Scheduler.ps1',
+        'Modules\10_NetworkTools.ps1', 'Modules\11_SecurityBackup.ps1', 'Modules\12_AdvancedTools.ps1',
+        'Modules\13_SilentInstaller.ps1', 'Modules\14_BackupExport.ps1', 'Modules\15_SmartProfiles.ps1',
+        'Modules\16_Settings.ps1',
         'Gui\GuiCommon.ps1', 'Gui\MainWindow.ps1', 'Gui\SettingsWindow.ps1'
     )
     BeforeAll {
@@ -90,7 +90,7 @@ Describe 'WinOptimizer Common library - config and i18n' {
 
     It 'Test-WinOptModuleAllowed enforces the beginner allowlist' {
         $script:WinOptMode = 'beginner'
-        $script:WinOptConfig.beginnerAllowedModules = @(1, 2, 6, 7, 15, 16, 17, 18)
+        $script:WinOptConfig.beginnerAllowedModules = @(1, 3, 4, 11, 15, 16, 17, 18)
         Test-WinOptModuleAllowed -ModuleNumber 1 | Should -Be $true
         Test-WinOptModuleAllowed -ModuleNumber 9 | Should -Be $false
         $script:WinOptMode = 'advanced'

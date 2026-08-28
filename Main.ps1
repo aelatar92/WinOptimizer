@@ -85,21 +85,21 @@ function Show-Help-Guide {
 
 $ModuleMap = @{
     '1'  = @{ Path = 'Modules\1_OptimizeOS.ps1'; Num = 1 }
-    '2'  = @{ Path = 'Modules\2_DiskTools.ps1'; Num = 2 }
-    '3'  = @{ Path = 'Modules\3_AdvancedTools.ps1'; Num = 3 }
-    '4'  = @{ Path = 'Modules\4_DriversRepair.ps1'; Num = 4 }
-    '5'  = @{ Path = 'Modules\5_SilentInstaller.ps1'; Num = 5 }
-    '6'  = @{ Path = 'Modules\6_SecurityBackup.ps1'; Num = 6 }
-    '7'  = @{ Path = 'Modules\7_AIDiagnostics.ps1'; Num = 7 }
-    '8'  = @{ Path = 'Modules\8_StartupManager.ps1'; Num = 8 }
-    '9'  = @{ Path = 'Modules\9_WindowsServices.ps1'; Num = 9 }
-    '10' = @{ Path = 'Modules\10_AdvancedCleanup.ps1'; Num = 10 }
-    '11' = @{ Path = 'Modules\11_NetworkTools.ps1'; Num = 11 }
-    '12' = @{ Path = 'Modules\12_BackupExport.ps1'; Num = 12 }
-    '13' = @{ Path = 'Modules\13_BatteryHealth.ps1'; Num = 13 }
-    '14' = @{ Path = 'Modules\14_Scheduler.ps1'; Num = 14 }
-    '15' = @{ Path = 'Modules\15_Settings.ps1'; Num = 15 }
-    '16' = @{ Path = 'Modules\16_SmartProfiles.ps1'; Num = 16 }
+    '2'  = @{ Path = 'Modules\2_AdvancedCleanup.ps1'; Num = 2 }
+    '3'  = @{ Path = 'Modules\3_DiskTools.ps1'; Num = 3 }
+    '4'  = @{ Path = 'Modules\4_AIDiagnostics.ps1'; Num = 4 }
+    '5'  = @{ Path = 'Modules\5_BatteryHealth.ps1'; Num = 5 }
+    '6'  = @{ Path = 'Modules\6_StartupManager.ps1'; Num = 6 }
+    '7'  = @{ Path = 'Modules\7_WindowsServices.ps1'; Num = 7 }
+    '8'  = @{ Path = 'Modules\8_DriversRepair.ps1'; Num = 8 }
+    '9'  = @{ Path = 'Modules\9_Scheduler.ps1'; Num = 9 }
+    '10' = @{ Path = 'Modules\10_NetworkTools.ps1'; Num = 10 }
+    '11' = @{ Path = 'Modules\11_SecurityBackup.ps1'; Num = 11 }
+    '12' = @{ Path = 'Modules\12_AdvancedTools.ps1'; Num = 12 }
+    '13' = @{ Path = 'Modules\13_SilentInstaller.ps1'; Num = 13 }
+    '14' = @{ Path = 'Modules\14_BackupExport.ps1'; Num = 14 }
+    '15' = @{ Path = 'Modules\15_SmartProfiles.ps1'; Num = 15 }
+    '16' = @{ Path = 'Modules\16_Settings.ps1'; Num = 16 }
 }
 
 $menuItems = @(1..18)

@@ -54,7 +54,7 @@ do {
             }
         }
         '3' {
-            Write-Host 'Use Main Menu > 15 Settings > Restore registry from backup.' -ForegroundColor Cyan
+            Write-Host 'Use Main Menu > 16 Settings > Restore registry from backup.' -ForegroundColor Cyan
         }
         '4' { break }
     }

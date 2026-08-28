@@ -19,20 +19,20 @@ Import-WinOptGuiAssemblies
 
 $ModuleMap = @{
     1  = Join-Path $ScriptDir 'Modules\1_OptimizeOS.ps1'
-    2  = Join-Path $ScriptDir 'Modules\2_DiskTools.ps1'
-    3  = Join-Path $ScriptDir 'Modules\3_AdvancedTools.ps1'
-    4  = Join-Path $ScriptDir 'Modules\4_DriversRepair.ps1'
-    5  = Join-Path $ScriptDir 'Modules\5_SilentInstaller.ps1'
-    6  = Join-Path $ScriptDir 'Modules\6_SecurityBackup.ps1'
-    7  = Join-Path $ScriptDir 'Modules\7_AIDiagnostics.ps1'
-    8  = Join-Path $ScriptDir 'Modules\8_StartupManager.ps1'
-    9  = Join-Path $ScriptDir 'Modules\9_WindowsServices.ps1'
-    10 = Join-Path $ScriptDir 'Modules\10_AdvancedCleanup.ps1'
-    11 = Join-Path $ScriptDir 'Modules\11_NetworkTools.ps1'
-    12 = Join-Path $ScriptDir 'Modules\12_BackupExport.ps1'
-    13 = Join-Path $ScriptDir 'Modules\13_BatteryHealth.ps1'
-    14 = Join-Path $ScriptDir 'Modules\14_Scheduler.ps1'
-    16 = Join-Path $ScriptDir 'Modules\16_SmartProfiles.ps1'
+    2  = Join-Path $ScriptDir 'Modules\2_AdvancedCleanup.ps1'
+    3  = Join-Path $ScriptDir 'Modules\3_DiskTools.ps1'
+    4  = Join-Path $ScriptDir 'Modules\4_AIDiagnostics.ps1'
+    5  = Join-Path $ScriptDir 'Modules\5_BatteryHealth.ps1'
+    6  = Join-Path $ScriptDir 'Modules\6_StartupManager.ps1'
+    7  = Join-Path $ScriptDir 'Modules\7_WindowsServices.ps1'
+    8  = Join-Path $ScriptDir 'Modules\8_DriversRepair.ps1'
+    9  = Join-Path $ScriptDir 'Modules\9_Scheduler.ps1'
+    10 = Join-Path $ScriptDir 'Modules\10_NetworkTools.ps1'
+    11 = Join-Path $ScriptDir 'Modules\11_SecurityBackup.ps1'
+    12 = Join-Path $ScriptDir 'Modules\12_AdvancedTools.ps1'
+    13 = Join-Path $ScriptDir 'Modules\13_SilentInstaller.ps1'
+    14 = Join-Path $ScriptDir 'Modules\14_BackupExport.ps1'
+    15 = Join-Path $ScriptDir 'Modules\15_SmartProfiles.ps1'
 }
 
 [xml]$xamlDoc = @"
@@ -58,7 +58,7 @@ $ModuleMap = @{
             <Button x:Name="BtnLang" Content="EN / AR" Width="90" HorizontalAlignment="Right" Margin="15,0,0,0"/>
         </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Button x:Name="Btn15" Content="Settings" Width="160" Height="40"/>
+            <Button x:Name="Btn16" Content="Settings" Width="160" Height="40"/>
             <Button x:Name="BtnHelp" Content="Help" Width="160" Height="40"/>
             <Button x:Name="BtnExit" Content="Exit" Width="160" Height="40" Background="#3b1219" Foreground="#ff8080"/>
         </StackPanel>
@@ -75,13 +75,13 @@ $window = [Windows.Markup.XamlReader]::Load($reader)
 $txtTitle = $window.FindName('TxtTitle')
 $txtMode = $window.FindName('TxtMode')
 $btnLang = $window.FindName('BtnLang')
-$btn15 = $window.FindName('Btn15')
+$btn16 = $window.FindName('Btn16')
 $btnHelp = $window.FindName('BtnHelp')
 $btnExit = $window.FindName('BtnExit')
 $moduleGrid = $window.FindName('ModuleGrid')
 
 $moduleButtons = @{}
-foreach ($num in (1..14) + 16) {
+foreach ($num in 1..15) {
     $btn = New-Object System.Windows.Controls.Button
     $btn.Tag = $num
     $clickHandler = {
@@ -105,7 +105,7 @@ function Update-WinOptGuiTexts {
     foreach ($num in $moduleButtons.Keys) {
         $moduleButtons[$num].Content = (T "menu_$num")
     }
-    $btn15.Content = (T 'menu_15')
+    $btn16.Content = (T 'menu_16')
     $btnHelp.Content = (T 'menu_17')
     $btnExit.Content = (T 'menu_18')
 }
@@ -118,7 +118,7 @@ $btnLang.Add_Click({
     Update-WinOptGuiTexts
 }.GetNewClosure())
 
-$btn15.Add_Click({
+$btn16.Add_Click({
     . $SettingsWindowPath
     Show-WinOptSettingsWindow -Owner $window
     Update-WinOptGuiTexts

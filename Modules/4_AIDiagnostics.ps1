@@ -45,7 +45,7 @@ function Get-WinOptExpertSystemPrompt {
     return "You are a senior Windows systems engineer embedded in a Windows maintenance tool called WinOptimizer. " +
         "You are given a live diagnostic snapshot of the user's PC as JSON. Respond in $lang. " +
         "Give: (1) a one-line overall verdict, (2) up to 3 prioritized issues with concrete fixes, referencing WinOptimizer's own menu options where relevant " +
-        "(1=OS cleanup, 2=Disk tools, 8=Startup manager, 9=Services, 10=Advanced cleanup, 16=Smart Profiles), " +
+        "(1=OS cleanup, 2=Advanced cleanup, 3=Disk tools, 6=Startup manager, 7=Services, 15=Smart Profiles), " +
         "(3) one preventive tip. Keep the whole answer under 180 words and do not repeat the raw numbers back verbatim."
 }
 
@@ -142,7 +142,7 @@ do {
         if (-not $IsOnline) {
             Write-Host "[Status] Processing via built-in offline rule set..." -ForegroundColor Gray
             if ($LiveAudioStatus -eq "Running") { Write-Host " -> REPAIR VERIFIED: Past log errors detected, but live service validation is ACTIVE." -ForegroundColor Green } 
-            else { Write-Host " -> SYSTEM INSTABILITY: Service is stopped. Run Module 4 Option 3." -ForegroundColor Red }
+            else { Write-Host " -> SYSTEM INSTABILITY: Service is stopped. Run Module 8 Option 3." -ForegroundColor Red }
         }
         Write-Host "======================================================================================" -ForegroundColor Magenta
         Read-Host "Diagnostics Complete! Press Enter to return to menu..."
@@ -213,7 +213,7 @@ do {
         if ($C_FreeSpacePercent -lt 15) {
             $IssuesFound++
             Write-Host "[!] ALERT: Drive C Free Space Margin is Critical ($C_FreeSpacePercent% Left)." -ForegroundColor Red
-            Write-Host "    - FIX  : Go to Main Menu -> [Module 2] (Disk Tools)." -ForegroundColor Yellow
+            Write-Host "    - FIX  : Go to Main Menu -> [Module 3] (Disk Tools)." -ForegroundColor Yellow
         }
         if ($UptimeDays -ge 7) {
             $IssuesFound++

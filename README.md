@@ -7,52 +7,52 @@ Windows maintenance toolkit — interactive PowerShell menu (or an optional WPF 
 - Windows 10/11
 - **Administrator** (run `Run.bat` as admin)
 - PowerShell 5.1+
-- **Winget** (for module 5 only)
+- **Winget** (for module 13 only)
 
 ## Quick start
 
 1. Right-click **`Run.bat`** → **Run as administrator**
 2. Choose a module from the menu (1–18)
-3. Use **15** for UI mode (Beginner/Advanced), language, rollback, and logs
+3. Use **16** for UI mode (Beginner/Advanced), language, rollback, and logs
 
 ## Modules
 
-| # | Module |
-|---|--------|
-| 1 | OS cleanup, restore point |
-| 2 | SFC, DISM, chkdsk, SSD trim / HDD defrag |
-| 3 | Gaming, DNS, privacy tweaks |
-| 4 | Store, drivers, audio, print spooler |
-| 5 | Winget install/update/export |
-| 6 | Restore point, Defender, port audit |
-| 7 | Diagnostics, health score, HTML report |
-| 8 | Startup programs |
-| 9 | Windows services |
-| 10 | Advanced cleanup |
-| 11 | Network tools |
-| 12 | Backup & export |
-| 13 | Battery report (laptops) |
-| 14 | Task scheduler |
-| 15 | Settings, rollback & language |
-| 16 | Smart Profiles (Gaming, Battery, Privacy, Developer) |
-| 17 | Help |
-| 18 | Exit |
+| # | Module | Group |
+|---|--------|-------|
+| 1 | OS cleanup, restore point | Cleanup & Optimization |
+| 2 | Advanced cleanup (Recycle Bin, Delivery Optimization, WinSxS) | Cleanup & Optimization |
+| 3 | Disk tools (SFC, DISM, chkdsk, SSD trim / HDD defrag) | Cleanup & Optimization |
+| 4 | Smart Diagnostics, health score, HTML report | Diagnostics & Health |
+| 5 | Battery report (laptops) | Diagnostics & Health |
+| 6 | Startup programs | System Management |
+| 7 | Windows services | System Management |
+| 8 | Drivers & system repair (Store, drivers, audio, print spooler) | System Management |
+| 9 | Task scheduler | System Management |
+| 10 | Network tools | Network & Security |
+| 11 | Security & restore point (Defender, port audit) | Network & Security |
+| 12 | Advanced & gaming tweaks (DNS, privacy) | Network & Security |
+| 13 | Winget install/update/export | Apps & Backup |
+| 14 | Backup & export | Apps & Backup |
+| 15 | Smart Profiles (Gaming, Battery, Privacy, Developer) | Profiles & Settings |
+| 16 | Settings, rollback & language | Profiles & Settings |
+| 17 | Help | — |
+| 18 | Exit | — |
 
 ## Language
 
-Switch between English and Arabic from **Settings (15) → 7**. The setting is saved to `config.json` (`language`) and takes effect immediately.
+Switch between English and Arabic from **Settings (16) → 7**. The setting is saved to `config.json` (`language`) and takes effect immediately.
 
 ## Smart Profiles
 
-Module 16 applies a curated bundle of existing tools in one step: a Gaming profile (Ultimate Performance plan + low-latency tweaks + cache clear), Battery Saver, Privacy/Clean, and Developer (installs the `wingetBundles.developer` apps from `config.json`). Disable it by setting `enableSmartProfiles` to `false` in `config.json`.
+Module 15 applies a curated bundle of existing tools in one step: a Gaming profile (Ultimate Performance plan + low-latency tweaks + cache clear), Battery Saver, Privacy/Clean, and Developer (installs the `wingetBundles.developer` apps from `config.json`). Disable it by setting `enableSmartProfiles` to `false` in `config.json`.
 
 ## Local AI (free, offline diagnostics via Ollama)
 
-Module 7 ("Smart Diagnostics") has a genuine AI-powered option (`[5] Ask Local AI for a real expert analysis`) alongside the original rule-based checks. It sends a small JSON snapshot of your PC (OS, CPU/RAM load, free disk %, uptime, pending-reboot flag, and a few recent System log error messages — no personal files or browsing data) to a model running entirely on your own PC via [Ollama](https://ollama.com), and prints back a prioritized, plain-English diagnosis — no API key, no per-request cost, no internet needed after the model is downloaded.
+Module 4 ("Smart Diagnostics") has a genuine AI-powered option (`[5] Ask Local AI for a real expert analysis`) alongside the original rule-based checks. It sends a small JSON snapshot of your PC (OS, CPU/RAM load, free disk %, uptime, pending-reboot flag, and a few recent System log error messages — no personal files or browsing data) to a model running entirely on your own PC via [Ollama](https://ollama.com), and prints back a prioritized, plain-English diagnosis — no API key, no per-request cost, no internet needed after the model is downloaded.
 
 **External setup required (this is the only feature in WinOptimizer that needs anything outside the app):**
 1. Install [Ollama](https://ollama.com) (or `winget install Ollama.Ollama`) and pull a model, e.g. `ollama pull qwen2.5:3b` (small, fast, and multilingual — a good match for this app's English/Arabic UI). Any chat-capable Ollama model works; set its exact name in step 2.
-2. In WinOptimizer, go to **Settings (15) → 8 (Local AI)**:
+2. In WinOptimizer, go to **Settings (16) → 8 (Local AI)**:
    - Option 1 to enable it.
    - Option 2 to set the model name (must match what you pulled in Ollama, e.g. `qwen2.5:3b`, `llama3.2`, `phi3`).
    - Option 3 to test the connection to Ollama.
@@ -62,7 +62,7 @@ Module 7 ("Smart Diagnostics") has a genuine AI-powered option (`[5] Ask Local A
 
 ## GUI (experimental)
 
-Right-click **`RunGui.bat`** → **Run as administrator** for a WPF window instead of the console menu: click any of the 16 module buttons to launch that module in its own console window (unchanged, same as running it from the text menu), or use the **Settings** button for a full graphical settings dialog (UI mode, language, rollback actions, and the Local AI panel — enable toggle, model name, test connection) instead of typing numbers. A language button switches English/Arabic instantly, including right-to-left layout.
+Right-click **`RunGui.bat`** → **Run as administrator** for a WPF window instead of the console menu: click any of the 15 module buttons to launch that module in its own console window (unchanged, same as running it from the text menu), or use the **Settings** button for a full graphical settings dialog (UI mode, language, rollback actions, and the Local AI panel — enable toggle, model name, test connection) instead of typing numbers. A language button switches English/Arabic instantly, including right-to-left layout.
 
 `Run.bat` / `Main.ps1` (the console menu) are untouched and remain the primary, fully-tested way to use WinOptimizer — the GUI is an additional opt-in entry point under `Gui\`, not a replacement.
 
