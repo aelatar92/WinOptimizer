@@ -19,7 +19,7 @@ Describe 'WinOptimizer PowerShell syntax' {
         'Modules\10_NetworkTools.ps1', 'Modules\11_SecurityBackup.ps1', 'Modules\12_AdvancedTools.ps1',
         'Modules\13_SilentInstaller.ps1', 'Modules\14_BackupExport.ps1', 'Modules\15_SmartProfiles.ps1',
         'Modules\16_Settings.ps1',
-        'Gui\GuiCommon.ps1', 'Gui\MainWindow.ps1', 'Gui\SettingsWindow.ps1', 'Gui\TrayMonitor.ps1'
+        'Gui\GuiCommon.ps1', 'Gui\MainWindow.ps1', 'Gui\SettingsWindow.ps1', 'Gui\TrayMonitor.ps1', 'Gui\LogViewerWindow.ps1'
     )
     BeforeAll {
         $script:projectRoot = Split-Path $PSScriptRoot -Parent
@@ -155,7 +155,7 @@ Describe 'WinOptimizer HTML report export' {
 }
 
 Describe 'WinOptimizer GUI XAML validity' {
-    $guiFiles = @('Gui\MainWindow.ps1', 'Gui\SettingsWindow.ps1')
+    $guiFiles = @('Gui\MainWindow.ps1', 'Gui\SettingsWindow.ps1', 'Gui\LogViewerWindow.ps1')
     BeforeAll {
         $script:projectRoot = Split-Path $PSScriptRoot -Parent
     }

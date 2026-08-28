@@ -55,6 +55,7 @@ function Show-WinOptSettingsWindow {
                 <Button x:Name="BtnRestoreDns" Content="Restore DNS from backup"/>
                 <Button x:Name="BtnRestoreReg" Content="Restore registry from backup"/>
                 <Button x:Name="BtnOpenLogs" Content="Open logs folder"/>
+                <Button x:Name="BtnViewLogs" Content="View logs"/>
                 <Button x:Name="BtnCheckUpdates" Content="Check for updates"/>
             </WrapPanel>
 
@@ -90,6 +91,7 @@ function Show-WinOptSettingsWindow {
     $btnRestoreDns = $win.FindName('BtnRestoreDns')
     $btnRestoreReg = $win.FindName('BtnRestoreReg')
     $btnOpenLogs = $win.FindName('BtnOpenLogs')
+    $btnViewLogs = $win.FindName('BtnViewLogs')
     $btnCheckUpdates = $win.FindName('BtnCheckUpdates')
     $txtLocalAIStatus = $win.FindName('TxtLocalAIStatus')
     $chkEnableLocalAI = $win.FindName('ChkEnableLocalAI')
@@ -127,6 +129,11 @@ function Show-WinOptSettingsWindow {
     $btnOpenLogs.Add_Click({
         $logDir = Join-Path $script:WinOptRoot 'logs'
         Start-Process explorer.exe $logDir
+    }.GetNewClosure())
+
+    $btnViewLogs.Add_Click({
+        . (Join-Path $PSScriptRoot 'LogViewerWindow.ps1')
+        Show-WinOptLogViewer -Owner $win
     }.GetNewClosure())
 
     $btnCheckUpdates.Add_Click({

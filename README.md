@@ -74,7 +74,7 @@ Module 4 ("Smart Diagnostics") has a genuine AI-powered option (`[5] Ask Local A
 
 ## GUI (experimental)
 
-Right-click **`RunGui.bat`** → **Run as administrator** for a WPF window instead of the console menu: click any of the 15 module buttons to launch that module in its own console window (unchanged, same as running it from the text menu), or use the **Settings** button for a full graphical settings dialog (UI mode, language, rollback actions, and the Local AI panel — enable toggle, model name, test connection) instead of typing numbers. A language button switches English/Arabic instantly, including right-to-left layout.
+Right-click **`RunGui.bat`** → **Run as administrator** for a WPF window instead of the console menu: click any of the 15 module buttons to launch that module in its own console window (unchanged, same as running it from the text menu), or use the **Settings** button for a full graphical settings dialog (UI mode, language, rollback actions, a live log viewer, and the Local AI panel — enable toggle, model name, test connection) instead of typing numbers. A language button switches English/Arabic instantly, including right-to-left layout.
 
 `Run.bat` / `Main.ps1` (the console menu) are untouched and remain the primary, fully-tested way to use WinOptimizer — the GUI is an additional opt-in entry point under `Gui\`, not a replacement.
 
