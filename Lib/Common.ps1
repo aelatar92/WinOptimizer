@@ -412,7 +412,7 @@ function Test-WinOptStartupRequirements {
     if ($winget) {
         Write-WinOptHost "$(T 'req_ok') Winget: installed" -ForegroundColor Green
     } else {
-        Write-WinOptHost "$(T 'req_warn') Winget: not found (Module 5 limited)" -ForegroundColor Yellow
+        Write-WinOptHost "$(T 'req_warn') Winget: not found (Module 13 limited)" -ForegroundColor Yellow
     }
 
     $psVer = $PSVersionTable.PSVersion.ToString()

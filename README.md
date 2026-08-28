@@ -7,7 +7,19 @@ Windows maintenance toolkit — interactive PowerShell menu (or an optional WPF 
 - Windows 10/11
 - **Administrator** (run `Run.bat` as admin)
 - PowerShell 5.1+
-- **Winget** (for module 13 only)
+
+Everything above is all you need for 14 of the 16 modules. Two specific modules need something extra — see the table below.
+
+## External setup — only needed for these two modules
+
+Everything else in WinOptimizer works with nothing beyond the requirements above; these are the only two features that reach outside the app itself.
+
+| Module | Needs | Already have it? | If not |
+|---|---|---|---|
+| **13 — Winget Apps Installer** | The `winget` command | Pre-installed on Windows 10 (2004+) and Windows 11 via "App Installer". Run `winget --version` to check. | Install "App Installer" from the Microsoft Store, or see [github.com/microsoft/winget-cli](https://github.com/microsoft/winget-cli) |
+| **4 — Smart Diagnostics → [5] Ask Local AI** | [Ollama](https://ollama.com) running locally, with a model pulled | Run `ollama --version`; if missing, it isn't installed | Install Ollama (`winget install Ollama.Ollama` once winget is available, or download from ollama.com), then `ollama pull qwen2.5:3b`. Full walkthrough in [Local AI](#local-ai-free-offline-diagnostics-via-ollama) below. |
+
+The app checks for `winget` on every startup and warns if it's missing (module 13 only — nothing else is affected). Local AI has its own **Settings (16) → 8 → 3. Test connection** to verify Ollama is reachable before you rely on it.
 
 ## Quick start
 
