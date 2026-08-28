@@ -172,68 +172,6 @@ Describe 'WinOptimizer GUI XAML validity' {
     }
 }
 
-Describe 'WinOptimizer Claude AI integration' {
-    BeforeAll {
-        $script:projectRoot = Split-Path $PSScriptRoot -Parent
-        $script:tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("WinOptTest_" + [guid]::NewGuid())
-        New-Item -Path $script:tempRoot -ItemType Directory -Force | Out-Null
-        . (Join-Path $script:projectRoot 'Lib\Common.ps1')
-        Initialize-WinOpt -Root $script:tempRoot
-        $script:savedKeyEnv = $env:ANTHROPIC_API_KEY
-    }
-    AfterAll {
-        $env:ANTHROPIC_API_KEY = $script:savedKeyEnv
-        Remove-Item -Path $script:tempRoot -Recurse -Force -ErrorAction SilentlyContinue
-    }
-
-    It 'Get-WinOptClaudeApiKey reads from the environment variable' {
-        $env:ANTHROPIC_API_KEY = 'test-key-from-env'
-        Get-WinOptClaudeApiKey | Should -Be 'test-key-from-env'
-        Remove-Item Env:\ANTHROPIC_API_KEY -ErrorAction SilentlyContinue
-    }
-
-    It 'Get-WinOptClaudeApiKey returns null when nothing is configured' {
-        Remove-Item Env:\ANTHROPIC_API_KEY -ErrorAction SilentlyContinue
-        Get-WinOptClaudeApiKey | Should -BeNullOrEmpty
-    }
-
-    It 'Test-WinOptClaudeAIReady is false when disabled even with a key present' {
-        $env:ANTHROPIC_API_KEY = 'test-key-from-env'
-        $script:WinOptConfig.enableClaudeAI = $false
-        Test-WinOptClaudeAIReady | Should -Be $false
-        Remove-Item Env:\ANTHROPIC_API_KEY -ErrorAction SilentlyContinue
-    }
-
-    It 'Test-WinOptClaudeAIReady is true when enabled and a key is present' {
-        $env:ANTHROPIC_API_KEY = 'test-key-from-env'
-        $script:WinOptConfig.enableClaudeAI = $true
-        Test-WinOptClaudeAIReady | Should -Be $true
-        $script:WinOptConfig.enableClaudeAI = $false
-        Remove-Item Env:\ANTHROPIC_API_KEY -ErrorAction SilentlyContinue
-    }
-
-    It 'Invoke-WinOptClaudeAI throws a clear error with no API key configured' {
-        Remove-Item Env:\ANTHROPIC_API_KEY -ErrorAction SilentlyContinue
-        { Invoke-WinOptClaudeAI -SystemPrompt 'sys' -UserPrompt 'user' } | Should -Throw '*No Claude API key configured*'
-    }
-
-    It 'Invoke-WinOptClaudeAI calls the Messages API with the configured model and parses the text response' {
-        $env:ANTHROPIC_API_KEY = 'test-key-from-env'
-        $script:WinOptConfig.claudeModel = 'claude-sonnet-5'
-        Mock -CommandName Invoke-RestMethod -MockWith {
-            [pscustomobject]@{ content = @([pscustomobject]@{ type = 'text'; text = 'Mocked expert analysis.' }) }
-        }
-        $result = Invoke-WinOptClaudeAI -SystemPrompt 'You are a helper' -UserPrompt '{"disk":"ok"}'
-        $result | Should -Be 'Mocked expert analysis.'
-        Should -Invoke -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
-            $Uri -eq 'https://api.anthropic.com/v1/messages' -and
-            $Headers['x-api-key'] -eq 'test-key-from-env' -and
-            $Body -match 'claude-sonnet-5'
-        }
-        Remove-Item Env:\ANTHROPIC_API_KEY -ErrorAction SilentlyContinue
-    }
-}
-
 Describe 'WinOptimizer Local AI integration' {
     BeforeAll {
         $script:projectRoot = Split-Path $PSScriptRoot -Parent

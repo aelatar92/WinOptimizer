@@ -1,6 +1,6 @@
 ﻿# WinOptimizer Settings - WPF dialog (companion to Gui/MainWindow.ps1).
 # Reuses the same Lib/Common.ps1 functions as the console Settings module (15) -
-# no duplicated config/backup/Claude-key logic, only a different front end.
+# no duplicated config/backup logic, only a different front end.
 
 function Show-WinOptSettingsWindow {
     param($Owner)
@@ -8,7 +8,7 @@ function Show-WinOptSettingsWindow {
     [xml]$xamlDoc = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml/xml"
-        Title="WinOptimizer Settings" Height="560" Width="520"
+        Title="WinOptimizer Settings" Height="460" Width="520"
         Background="#0f1419" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
     <Window.Resources>
         <Style TargetType="Button">
@@ -58,25 +58,6 @@ function Show-WinOptSettingsWindow {
                 <Button x:Name="BtnCheckUpdates" Content="Check for updates"/>
             </WrapPanel>
 
-            <GroupBox Header="Claude AI (real AI diagnostics)">
-                <StackPanel Margin="8">
-                    <TextBlock x:Name="TxtClaudeStatus" Text="" Foreground="#8b949e" Margin="0,0,0,8"/>
-                    <TextBlock Text="Anthropic API key (input hidden):"/>
-                    <PasswordBox x:Name="PwdClaudeKey" Margin="0,4,0,4"/>
-                    <WrapPanel>
-                        <Button x:Name="BtnSaveKey" Content="Save Key"/>
-                        <Button x:Name="BtnClearKey" Content="Clear Key"/>
-                    </WrapPanel>
-                    <CheckBox x:Name="ChkEnableClaude" Content="Enable Claude AI"/>
-                    <TextBlock Text="Model:"/>
-                    <ComboBox x:Name="CmbClaudeModel" Width="260" HorizontalAlignment="Left">
-                        <ComboBoxItem Content="Sonnet 5 (best quality)" Tag="claude-sonnet-5"/>
-                        <ComboBoxItem Content="Haiku 4.5 (fastest/cheapest)" Tag="claude-haiku-4-5-20251001"/>
-                        <ComboBoxItem Content="Opus 5 (most capable)" Tag="claude-opus-5"/>
-                    </ComboBox>
-                </StackPanel>
-            </GroupBox>
-
             <GroupBox Header="Local AI (free, offline via Ollama)">
                 <StackPanel Margin="8">
                     <TextBlock x:Name="TxtLocalAIStatus" Text="" Foreground="#8b949e" Margin="0,0,0,8"/>
@@ -110,24 +91,12 @@ function Show-WinOptSettingsWindow {
     $btnRestoreReg = $win.FindName('BtnRestoreReg')
     $btnOpenLogs = $win.FindName('BtnOpenLogs')
     $btnCheckUpdates = $win.FindName('BtnCheckUpdates')
-    $txtClaudeStatus = $win.FindName('TxtClaudeStatus')
-    $pwdClaudeKey = $win.FindName('PwdClaudeKey')
-    $btnSaveKey = $win.FindName('BtnSaveKey')
-    $btnClearKey = $win.FindName('BtnClearKey')
-    $chkEnableClaude = $win.FindName('ChkEnableClaude')
-    $cmbClaudeModel = $win.FindName('CmbClaudeModel')
     $txtLocalAIStatus = $win.FindName('TxtLocalAIStatus')
     $chkEnableLocalAI = $win.FindName('ChkEnableLocalAI')
     $txtLocalAIModel = $win.FindName('TxtLocalAIModel')
     $btnTestLocalAI = $win.FindName('BtnTestLocalAI')
     $btnSaveClose = $win.FindName('BtnSaveClose')
     $btnCancel = $win.FindName('BtnCancel')
-
-    function Update-WinOptClaudeStatusText {
-        $enabledText = if ($script:WinOptConfig.enableClaudeAI) { 'ENABLED' } else { 'DISABLED' }
-        $keyText = if (Get-WinOptClaudeApiKey) { 'API key: configured' } else { 'API key: not configured' }
-        $txtClaudeStatus.Text = "Status: $enabledText | $keyText"
-    }
 
     function Update-WinOptLocalAIStatusText {
         $enabledText = if ($script:WinOptConfig.enableLocalAI) { 'ENABLED' } else { 'DISABLED' }
@@ -141,12 +110,6 @@ function Show-WinOptSettingsWindow {
         if ($item.Tag -eq $script:WinOptConfig.language) { $cmbLanguage.SelectedItem = $item }
     }
     if (-not $cmbLanguage.SelectedItem) { $cmbLanguage.SelectedIndex = 0 }
-    $chkEnableClaude.IsChecked = [bool]$script:WinOptConfig.enableClaudeAI
-    foreach ($item in $cmbClaudeModel.Items) {
-        if ($item.Tag -eq $script:WinOptConfig.claudeModel) { $cmbClaudeModel.SelectedItem = $item }
-    }
-    if (-not $cmbClaudeModel.SelectedItem) { $cmbClaudeModel.SelectedIndex = 0 }
-    Update-WinOptClaudeStatusText
     $chkEnableLocalAI.IsChecked = [bool]$script:WinOptConfig.enableLocalAI
     $txtLocalAIModel.Text = $script:WinOptConfig.localAIModel
     Update-WinOptLocalAIStatusText
@@ -182,23 +145,6 @@ function Show-WinOptSettingsWindow {
         }
     }.GetNewClosure())
 
-    $btnSaveKey.Add_Click({
-        if ($pwdClaudeKey.SecurePassword.Length -eq 0) {
-            Show-WinOptWarning -Message 'No key entered, nothing changed.'
-        } else {
-            Set-WinOptClaudeApiKey -SecureKey $pwdClaudeKey.SecurePassword
-            $pwdClaudeKey.Clear()
-            Update-WinOptClaudeStatusText
-            Show-WinOptInfo -Message 'API key saved (encrypted for this Windows user).'
-        }
-    }.GetNewClosure())
-
-    $btnClearKey.Add_Click({
-        Clear-WinOptClaudeApiKey
-        Update-WinOptClaudeStatusText
-        Show-WinOptInfo -Message 'API key removed.'
-    }.GetNewClosure())
-
     $btnTestLocalAI.Add_Click({
         if (Test-WinOptOllamaReachable) {
             Show-WinOptInfo -Message 'Ollama is reachable at localhost:11434. Ready to use.'
@@ -214,8 +160,6 @@ function Show-WinOptSettingsWindow {
         $script:WinOptConfig.uiMode = $script:WinOptMode
         $script:WinOptConfig.confirmRiskyActions = [bool]$chkConfirmRisky.IsChecked
         if ($cmbLanguage.SelectedItem) { $script:WinOptConfig.language = $cmbLanguage.SelectedItem.Tag }
-        $script:WinOptConfig.enableClaudeAI = [bool]$chkEnableClaude.IsChecked
-        if ($cmbClaudeModel.SelectedItem) { $script:WinOptConfig.claudeModel = $cmbClaudeModel.SelectedItem.Tag }
         $script:WinOptConfig.enableLocalAI = [bool]$chkEnableLocalAI.IsChecked
         if ($txtLocalAIModel.Text) { $script:WinOptConfig.localAIModel = $txtLocalAIModel.Text.Trim() }
         Save-WinOptConfig

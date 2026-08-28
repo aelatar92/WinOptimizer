@@ -1,6 +1,6 @@
 # WinOptimizer v2.0
 
-Windows maintenance toolkit — interactive PowerShell menu (or an optional WPF GUI), logging, beginner mode, real AI diagnostics via Claude, and 16 modules.
+Windows maintenance toolkit — interactive PowerShell menu (or an optional WPF GUI), logging, beginner mode, free local AI diagnostics via Ollama, and 16 modules.
 
 ## Requirements
 
@@ -46,37 +46,23 @@ Switch between English and Arabic from **Settings (15) → 7**. The setting is s
 
 Module 16 applies a curated bundle of existing tools in one step: a Gaming profile (Ultimate Performance plan + low-latency tweaks + cache clear), Battery Saver, Privacy/Clean, and Developer (installs the `wingetBundles.developer` apps from `config.json`). Disable it by setting `enableSmartProfiles` to `false` in `config.json`.
 
-## Claude AI (real AI diagnostics)
-
-Module 7 ("Smart Diagnostics") has a genuine AI-powered option (`[5] Ask Claude AI for a real expert analysis`) alongside the original rule-based checks. It sends a small JSON snapshot of your PC (OS, CPU/RAM load, free disk %, uptime, pending-reboot flag, and a few recent System log error messages — no personal files or browsing data) to the Anthropic Claude API and prints back a prioritized, plain-English diagnosis.
-
-**Setup:**
-1. Get an API key at [console.anthropic.com](https://console.anthropic.com/).
-2. In WinOptimizer, go to **Settings (15) → 8 (Claude AI)**:
-   - Option 1 to paste your key (input is hidden and stored **encrypted for your Windows user account** in `Data/claude_key.xml`, via `Export-Clixml`/DPAPI — never written to `config.json`, never committed to git).
-   - Option 3 to enable it.
-   - Option 4 to pick a model (Sonnet 5 by default; Haiku 4.5 for speed/cost, Opus 5 for the deepest analysis).
-3. Alternatively, set the `ANTHROPIC_API_KEY` environment variable — it takes priority over the stored key and needs no setup step.
-
-This is a paid API — check [Anthropic's pricing](https://www.anthropic.com/pricing) for the model you pick. Everything else in WinOptimizer keeps working exactly as before if you never touch this; `enableClaudeAI` defaults to `false`.
-
 ## Local AI (free, offline diagnostics via Ollama)
 
-Don't want to pay for an API? Module 7 also has `[6] Ask Local AI (Ollama, free & offline)`, which runs the same diagnostic-analysis prompt against a model running entirely on your own PC via [Ollama](https://ollama.com) — no API key, no per-request cost, no internet needed after the model is downloaded.
+Module 7 ("Smart Diagnostics") has a genuine AI-powered option (`[5] Ask Local AI for a real expert analysis`) alongside the original rule-based checks. It sends a small JSON snapshot of your PC (OS, CPU/RAM load, free disk %, uptime, pending-reboot flag, and a few recent System log error messages — no personal files or browsing data) to a model running entirely on your own PC via [Ollama](https://ollama.com), and prints back a prioritized, plain-English diagnosis — no API key, no per-request cost, no internet needed after the model is downloaded.
 
-**Setup:**
+**External setup required (this is the only feature in WinOptimizer that needs anything outside the app):**
 1. Install [Ollama](https://ollama.com) (or `winget install Ollama.Ollama`) and pull a model, e.g. `ollama pull qwen2.5:3b` (small, fast, and multilingual — a good match for this app's English/Arabic UI). Any chat-capable Ollama model works; set its exact name in step 2.
-2. In WinOptimizer, go to **Settings (15) → 9 (Local AI)**:
+2. In WinOptimizer, go to **Settings (15) → 8 (Local AI)**:
    - Option 1 to enable it.
    - Option 2 to set the model name (must match what you pulled in Ollama, e.g. `qwen2.5:3b`, `llama3.2`, `phi3`).
    - Option 3 to test the connection to Ollama.
 3. Ollama runs its own local server automatically once installed (`http://localhost:11434`) — WinOptimizer just talks to it.
 
-`enableLocalAI` defaults to `false` and doesn't touch anything else in the app.
+`enableLocalAI` defaults to `false`. Everything else in WinOptimizer keeps working exactly as before if you never touch this.
 
 ## GUI (experimental)
 
-Right-click **`RunGui.bat`** → **Run as administrator** for a WPF window instead of the console menu: click any of the 16 module buttons to launch that module in its own console window (unchanged, same as running it from the text menu), or use the **Settings** button for a full graphical settings dialog (UI mode, language, rollback actions, the Claude AI panel — API key, enable toggle, model picker — and the Local AI panel — enable toggle, model name, test connection) instead of typing numbers. A language button switches English/Arabic instantly, including right-to-left layout.
+Right-click **`RunGui.bat`** → **Run as administrator** for a WPF window instead of the console menu: click any of the 16 module buttons to launch that module in its own console window (unchanged, same as running it from the text menu), or use the **Settings** button for a full graphical settings dialog (UI mode, language, rollback actions, and the Local AI panel — enable toggle, model name, test connection) instead of typing numbers. A language button switches English/Arabic instantly, including right-to-left layout.
 
 `Run.bat` / `Main.ps1` (the console menu) are untouched and remain the primary, fully-tested way to use WinOptimizer — the GUI is an additional opt-in entry point under `Gui\`, not a replacement.
 

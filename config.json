@@ -28,7 +28,5 @@
     "enableLocalAI": false,
     "localAIModel": "qwen2.5:3b",
     "language": "en",
-    "autoCreateRestorePoint": true,
-    "enableClaudeAI": false,
-    "claudeModel": "claude-sonnet-5"
+    "autoCreateRestorePoint": true
 }

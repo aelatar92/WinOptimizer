@@ -5,15 +5,14 @@ Initialize-WinOptModule -ModuleName 'AIDiagnostics'
 function Show-AI-Menu {
     Clear-Host
     Write-Host "======================================================================================" -ForegroundColor Magenta
-    Write-Host "     SMART DIAGNOSTICS AND ADVANCED SYSTEM AUDIT (RULE-BASED + OPTIONAL REAL AI)     " -ForegroundColor Yellow
+    Write-Host "     SMART DIAGNOSTICS AND ADVANCED SYSTEM AUDIT (RULE-BASED + OPTIONAL LOCAL AI)    " -ForegroundColor Yellow
     Write-Host "======================================================================================" -ForegroundColor Magenta
     Write-Host "  [1] Run Smart System Scan (local rules + online extensions) ---------- [HYBRID]" -ForegroundColor White
     Write-Host "  [2] Run Deep Hardware and Software Full Audit ------------------------ [OFFLINE]" -ForegroundColor White
     Write-Host "  [3] View Full System Specs, Network Topology and Upgrade Path -------- [EXPANDED]" -ForegroundColor Green
     Write-Host "  [4] Health Score + HTML Report --------------------------------------- [NEW]" -ForegroundColor Cyan
-    Write-Host "  $(T 'ai_option_5')" -ForegroundColor Magenta
-    Write-Host "  $(T 'ai_option_6')" -ForegroundColor Blue
-    Write-Host "  $(T 'ai_option_7')" -ForegroundColor Red
+    Write-Host "  $(T 'ai_option_5')" -ForegroundColor Blue
+    Write-Host "  $(T 'ai_option_6')" -ForegroundColor Red
     Write-Host "======================================================================================" -ForegroundColor Magenta
 }
 
@@ -50,34 +49,6 @@ function Get-WinOptExpertSystemPrompt {
         "(3) one preventive tip. Keep the whole answer under 180 words and do not repeat the raw numbers back verbatim."
 }
 
-function Invoke-ClaudeExpertAnalysis {
-    Clear-Host
-    if (-not (Test-WinOptClaudeAIReady)) {
-        Write-Host (T 'ai_claude_disabled') -ForegroundColor Yellow
-        Wait-WinOptEnter
-        return
-    }
-
-    $snapshot = Get-WinOptDiagnosticSnapshot
-    $systemPrompt = Get-WinOptExpertSystemPrompt
-    $userPrompt = $snapshot | ConvertTo-Json -Depth 4
-
-    Write-Host (T 'ai_claude_working') -ForegroundColor Cyan
-    try {
-        $analysis = Invoke-WinOptClaudeAI -SystemPrompt $systemPrompt -UserPrompt $userPrompt
-        Write-Host "`n======================================================================================" -ForegroundColor Magenta
-        Write-Host "  $(T 'ai_claude_title')" -ForegroundColor Yellow
-        Write-Host "======================================================================================" -ForegroundColor Magenta
-        Write-Host $analysis -ForegroundColor White
-        Write-Host "======================================================================================" -ForegroundColor Magenta
-        Write-WinOptLog "Claude AI analysis delivered (model=$($script:WinOptConfig.claudeModel))"
-    } catch {
-        Write-Host "$(T 'ai_claude_error') $_" -ForegroundColor Red
-        Write-WinOptLog "Claude AI request failed: $_" 'ERROR'
-    }
-    Wait-WinOptEnter
-}
-
 function Invoke-LocalAIExpertAnalysis {
     Clear-Host
     if (-not (Test-WinOptLocalAIReady)) {
@@ -108,7 +79,7 @@ function Invoke-LocalAIExpertAnalysis {
 
 do {
     Show-AI-Menu
-    $aiChoice = Read-Host "Select an option (1-7)"
+    $aiChoice = Read-Host "Select an option (1-6)"
 
     if ($aiChoice -eq '1') {
         Clear-Host
@@ -426,10 +397,6 @@ do {
     }
 
     elseif ($aiChoice -eq '5') {
-        Invoke-ClaudeExpertAnalysis
-    }
-
-    elseif ($aiChoice -eq '6') {
         Invoke-LocalAIExpertAnalysis
     }
-} while ($aiChoice -ne '7')
+} while ($aiChoice -ne '6')
