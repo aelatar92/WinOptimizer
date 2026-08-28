@@ -27,6 +27,8 @@ The app checks for `winget` on every startup and warns if it's missing (module 1
 2. Choose a module from the menu (1–18)
 3. Use **16** for UI mode (Beginner/Advanced), language, rollback, and logs
 
+No installation needed — WinOptimizer runs straight from an extracted ZIP via `Run.bat`. If you'd rather have it installed like a normal app (Start Menu entry, listed in Settings → Apps for uninstalling), right-click **`Install.ps1`** → **Run with PowerShell** (or `powershell -ExecutionPolicy Bypass -File Install.ps1`), optionally with `-DesktopShortcut`. It copies the app to `Program Files\WinOptimizer`, adds Start Menu shortcuts, and registers with Add/Remove Programs. `Uninstall.ps1` (also reachable from the Start Menu or Add/Remove Programs after installing) removes the shortcuts and registry entry — it deliberately leaves the install folder itself in place, since your logs, reports, and exports live there; delete it yourself once you've kept anything you want.
+
 ## Modules
 
 | # | Module | Group |
@@ -111,7 +113,7 @@ Run **`RunTray.bat`** to start a background tray icon that shows the live health
 
 ## Releases / packaging
 
-Tagged releases are packaged and published automatically by `.github/workflows/release.yml`: it stages the end-user files (`Main.ps1`, `Run.bat`, `Run-WT.bat`, `RunGui.bat`, `Lib/`, `Modules/`, `Gui/`, `config.json`, `README.md` — `Tests/` and `.github/` are left out), zips them, and publishes them as a GitHub Release asset.
+Tagged releases are packaged and published automatically by `.github/workflows/release.yml`: it stages the end-user files (`Main.ps1`, `Run.bat`, `Run-WT.bat`, `RunGui.bat`, `RunTray.bat`, `Install.ps1`, `Uninstall.ps1`, `Lib/`, `Modules/`, `Gui/`, `config.json`, `README.md` — `Tests/` and `.github/` are left out), zips them, and publishes them as a GitHub Release asset.
 
 **To cut a release:**
 1. Bump the version in both `config.json` (`"version"`) and `Lib/Common.ps1` (`$script:WinOptVersion`) — they must match.

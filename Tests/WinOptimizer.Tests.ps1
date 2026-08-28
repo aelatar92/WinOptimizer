@@ -12,7 +12,7 @@
 
 Describe 'WinOptimizer PowerShell syntax' {
     $files = @(
-        'Main.ps1', 'Lib\Common.ps1', 'Lib\ScheduledHealthReport.ps1',
+        'Main.ps1', 'Install.ps1', 'Uninstall.ps1', 'Lib\Common.ps1', 'Lib\ScheduledHealthReport.ps1',
         'Modules\1_OptimizeOS.ps1', 'Modules\2_AdvancedCleanup.ps1', 'Modules\3_DiskTools.ps1',
         'Modules\4_AIDiagnostics.ps1', 'Modules\5_BatteryHealth.ps1', 'Modules\6_StartupManager.ps1',
         'Modules\7_WindowsServices.ps1', 'Modules\8_DriversRepair.ps1', 'Modules\9_Scheduler.ps1',

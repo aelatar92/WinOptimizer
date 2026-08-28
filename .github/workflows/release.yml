@@ -47,7 +47,7 @@ jobs:
         run: |
           STAGE="WinOptimizer-${{ steps.ver.outputs.version }}"
           mkdir -p "$STAGE/Data" "$STAGE/logs" "$STAGE/reports"
-          cp -r Main.ps1 Run.bat Run-WT.bat RunGui.bat Lib Modules Gui config.json README.md "$STAGE"/
+          cp -r Main.ps1 Run.bat Run-WT.bat RunGui.bat RunTray.bat Install.ps1 Uninstall.ps1 Lib Modules Gui config.json README.md "$STAGE"/
           cp Data/.gitkeep "$STAGE/Data/.gitkeep"
           find "$STAGE" -type f | sort
 
