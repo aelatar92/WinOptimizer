@@ -6,6 +6,9 @@ Data/exports/
 Data/rollback/
 !Data/.gitkeep
 
+# Secrets - never commit the Claude API key
+Data/claude_key.xml
+
 # Windows / editor
 Thumbs.db
 Desktop.ini

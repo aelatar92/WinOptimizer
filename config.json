@@ -27,5 +27,7 @@
     "enableSmartProfiles": true,
     "enableLocalAI": false,
     "language": "en",
-    "autoCreateRestorePoint": true
+    "autoCreateRestorePoint": true,
+    "enableClaudeAI": false,
+    "claudeModel": "claude-sonnet-5"
 }

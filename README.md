@@ -46,6 +46,20 @@ Switch between English and Arabic from **Settings (15) → 7**. The setting is s
 
 Module 16 applies a curated bundle of existing tools in one step: a Gaming profile (Ultimate Performance plan + low-latency tweaks + cache clear), Battery Saver, Privacy/Clean, and Developer (installs the `wingetBundles.developer` apps from `config.json`). Disable it by setting `enableSmartProfiles` to `false` in `config.json`.
 
+## Claude AI (real AI diagnostics)
+
+Module 7 ("Smart Diagnostics") has a genuine AI-powered option (`[5] Ask Claude AI for a real expert analysis`) alongside the original rule-based checks. It sends a small JSON snapshot of your PC (OS, CPU/RAM load, free disk %, uptime, pending-reboot flag, and a few recent System log error messages — no personal files or browsing data) to the Anthropic Claude API and prints back a prioritized, plain-English diagnosis.
+
+**Setup:**
+1. Get an API key at [console.anthropic.com](https://console.anthropic.com/).
+2. In WinOptimizer, go to **Settings (15) → 8 (Claude AI)**:
+   - Option 1 to paste your key (input is hidden and stored **encrypted for your Windows user account** in `Data/claude_key.xml`, via `Export-Clixml`/DPAPI — never written to `config.json`, never committed to git).
+   - Option 3 to enable it.
+   - Option 4 to pick a model (Sonnet 5 by default; Haiku 4.5 for speed/cost, Opus 5 for the deepest analysis).
+3. Alternatively, set the `ANTHROPIC_API_KEY` environment variable — it takes priority over the stored key and needs no setup step.
+
+This is a paid API — check [Anthropic's pricing](https://www.anthropic.com/pricing) for the model you pick. Everything else in WinOptimizer keeps working exactly as before if you never touch this; `enableClaudeAI` defaults to `false`.
+
 ## Folders
 
 | Path | Purpose |

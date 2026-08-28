@@ -60,7 +60,26 @@ $script:WinOptStrings = @{
         settings_5           = '5. Open logs folder'
         settings_6           = '6. Check for updates'
         settings_7           = '7. Language (English / Arabic)'
-        settings_8           = '8. Back'
+        settings_8           = '8. Claude AI (real AI diagnostics: API key, enable, model)'
+        settings_9           = '9. Back'
+        claude_menu_title    = '=== Claude AI Settings ==='
+        claude_menu_status   = 'Status:'
+        claude_menu_enabled  = 'ENABLED'
+        claude_menu_disabled = 'DISABLED'
+        claude_menu_keyset   = 'API key: configured'
+        claude_menu_keymissing = 'API key: not configured'
+        claude_menu_1        = '1. Set API key'
+        claude_menu_2        = '2. Clear API key'
+        claude_menu_3        = '3. Toggle enabled/disabled'
+        claude_menu_4        = '4. Choose model'
+        claude_menu_5        = '5. Back'
+        claude_prompt_key    = 'Paste your Anthropic API key (input hidden, starts with sk-ant-):'
+        claude_key_saved     = 'API key saved (encrypted for this Windows user).'
+        claude_key_cleared   = 'API key removed.'
+        claude_key_empty     = 'No key entered, nothing changed.'
+        claude_toggled       = 'Claude AI is now:'
+        claude_model_prompt  = '1 = Sonnet 5 (best quality)   2 = Haiku 4.5 (fastest/cheapest)   3 = Opus 5 (most capable)'
+        claude_model_set     = 'Model set to:'
         profiles_title       = '=== Smart Profiles ==='
         profiles_disabled    = 'Smart Profiles are disabled in config.json (enableSmartProfiles=false).'
         profiles_gaming      = '1. Gaming Profile (Ultimate Performance + Gaming tweaks + clear game cache)'
@@ -70,6 +89,12 @@ $script:WinOptStrings = @{
         profiles_back        = '5. Back'
         profiles_applying    = 'Applying profile:'
         profiles_done        = 'Profile applied.'
+        ai_option_5          = '[5] Ask Claude AI for a real expert analysis --------------------- [REAL AI]'
+        ai_option_6          = '[6] Back to Main Menu ------------------------------------------------ [BACK]'
+        ai_claude_disabled   = 'Claude AI is not set up. Go to Settings (15) -> 8 to add your API key and enable it.'
+        ai_claude_working    = 'Contacting Claude AI for a real expert analysis...'
+        ai_claude_error      = 'Claude AI request failed:'
+        ai_claude_title      = 'CLAUDE AI EXPERT ANALYSIS'
     }
     ar = @{
         admin_required       = 'مطلوب صلاحيات المسؤول (Administrator). شغّل Run.bat كمسؤول.'
@@ -124,7 +149,26 @@ $script:WinOptStrings = @{
         settings_5           = '5. فتح مجلد السجلات'
         settings_6           = '6. التحقق من التحديثات'
         settings_7           = '7. اللغة (English / عربي)'
-        settings_8           = '8. رجوع'
+        settings_8           = '8. إعدادات Claude AI (تشخيص ذكي حقيقي: مفتاح API، تفعيل، الموديل)'
+        settings_9           = '9. رجوع'
+        claude_menu_title    = '=== إعدادات Claude AI ==='
+        claude_menu_status   = 'الحالة:'
+        claude_menu_enabled  = 'مفعّل'
+        claude_menu_disabled = 'معطّل'
+        claude_menu_keyset   = 'مفتاح API: مضبوط'
+        claude_menu_keymissing = 'مفتاح API: غير مضبوط'
+        claude_menu_1        = '1. ضبط مفتاح API'
+        claude_menu_2        = '2. حذف مفتاح API'
+        claude_menu_3        = '3. تفعيل/تعطيل'
+        claude_menu_4        = '4. اختيار الموديل'
+        claude_menu_5        = '5. رجوع'
+        claude_prompt_key    = 'الصق مفتاح Anthropic API (الإدخال مخفي، يبدأ بـ sk-ant-):'
+        claude_key_saved     = 'تم حفظ المفتاح (مشفّر لهذا المستخدم على ويندوز).'
+        claude_key_cleared   = 'تم حذف المفتاح.'
+        claude_key_empty     = 'لم يتم إدخال مفتاح، لم يتغير شيء.'
+        claude_toggled       = 'Claude AI الآن:'
+        claude_model_prompt  = '1 = Sonnet 5 (أفضل جودة)   2 = Haiku 4.5 (أسرع وأرخص)   3 = Opus 5 (الأقوى)'
+        claude_model_set     = 'تم ضبط الموديل على:'
         profiles_title       = '=== البروفايلات الذكية ==='
         profiles_disabled    = 'البروفايلات الذكية معطّلة في config.json (enableSmartProfiles=false).'
         profiles_gaming      = '1. بروفايل الألعاب (أعلى أداء + تعديلات ألعاب + تنظيف كاش الألعاب)'
@@ -134,6 +178,12 @@ $script:WinOptStrings = @{
         profiles_back        = '5. رجوع'
         profiles_applying    = 'جارٍ تطبيق البروفايل:'
         profiles_done        = 'تم تطبيق البروفايل.'
+        ai_option_5          = '[5] اسأل Claude AI تحليل خبير حقيقي --------------------------- [ذكاء اصطناعي حقيقي]'
+        ai_option_6          = '[6] رجوع للقائمة الرئيسية ---------------------------------------- [رجوع]'
+        ai_claude_disabled   = 'Claude AI غير مفعّل. اذهب للإعدادات (15) -> 8 عشان تضيف مفتاح API وتفعّله.'
+        ai_claude_working    = 'جارٍ التواصل مع Claude AI لعمل تحليل خبير حقيقي...'
+        ai_claude_error      = 'فشل طلب Claude AI:'
+        ai_claude_title      = 'تحليل خبير من Claude AI'
     }
 }
 
@@ -197,6 +247,8 @@ function Import-WinOptConfig {
         enableSmartProfiles = $true
         enableLocalAI = $false
         autoCreateRestorePoint = $false
+        enableClaudeAI = $false
+        claudeModel = 'claude-sonnet-5'
     }
     if (Test-Path $configPath) {
         try {
@@ -234,6 +286,8 @@ function Save-WinOptConfig {
         enableSmartProfiles = [bool]$script:WinOptConfig.enableSmartProfiles
         enableLocalAI = [bool]$script:WinOptConfig.enableLocalAI
         autoCreateRestorePoint = [bool]$script:WinOptConfig.autoCreateRestorePoint
+        enableClaudeAI = [bool]$script:WinOptConfig.enableClaudeAI
+        claudeModel = $script:WinOptConfig.claudeModel
     }
     $out | ConvertTo-Json -Depth 6 | Set-Content -Path $configPath -Encoding UTF8
 }
@@ -530,6 +584,75 @@ function Invoke-WingetCommand {
     $exitCode = $LASTEXITCODE
     if ($exitCode -notin $SuccessCodes) { throw "winget exited with code $exitCode" }
     return $exitCode
+}
+
+function Get-WinOptClaudeKeyPath {
+    Join-Path $script:WinOptRoot 'Data\claude_key.xml'
+}
+
+function Get-WinOptClaudeApiKey {
+    if ($env:ANTHROPIC_API_KEY) { return $env:ANTHROPIC_API_KEY }
+    $keyFile = Get-WinOptClaudeKeyPath
+    if (-not (Test-Path $keyFile)) { return $null }
+    try {
+        $secure = Import-Clixml -Path $keyFile
+        $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+        try {
+            return [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
+        } finally {
+            [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
+        }
+    } catch {
+        Write-WinOptLog "Could not read stored Claude API key: $_" 'WARN'
+        return $null
+    }
+}
+
+function Set-WinOptClaudeApiKey {
+    param([Parameter(Mandatory)][securestring]$SecureKey)
+    $dataDir = Join-Path $script:WinOptRoot 'Data'
+    if (-not (Test-Path $dataDir)) { New-Item -Path $dataDir -ItemType Directory -Force | Out-Null }
+    $SecureKey | Export-Clixml -Path (Get-WinOptClaudeKeyPath)
+    Write-WinOptLog 'Claude API key saved (encrypted at rest for this Windows user).'
+}
+
+function Clear-WinOptClaudeApiKey {
+    $keyFile = Get-WinOptClaudeKeyPath
+    if (Test-Path $keyFile) { Remove-Item $keyFile -Force }
+    Write-WinOptLog 'Claude API key removed.'
+}
+
+function Test-WinOptClaudeAIReady {
+    return [bool]($script:WinOptConfig.enableClaudeAI -and (Get-WinOptClaudeApiKey))
+}
+
+function Invoke-WinOptClaudeAI {
+    param(
+        [Parameter(Mandatory)][string]$SystemPrompt,
+        [Parameter(Mandatory)][string]$UserPrompt,
+        [int]$MaxTokens = 800
+    )
+    $apiKey = Get-WinOptClaudeApiKey
+    if (-not $apiKey) { throw 'No Claude API key configured. Set one in Settings (15) or the ANTHROPIC_API_KEY environment variable.' }
+
+    $model = if ($script:WinOptConfig.claudeModel) { $script:WinOptConfig.claudeModel } else { 'claude-sonnet-5' }
+    $payload = @{
+        model      = $model
+        max_tokens = $MaxTokens
+        system     = $SystemPrompt
+        messages   = @(@{ role = 'user'; content = $UserPrompt })
+    } | ConvertTo-Json -Depth 8
+
+    $headers = @{
+        'x-api-key'         = $apiKey
+        'anthropic-version' = '2023-06-01'
+        'content-type'      = 'application/json'
+    }
+
+    $response = Invoke-RestMethod -Uri 'https://api.anthropic.com/v1/messages' -Method Post -Headers $headers -Body $payload -TimeoutSec 30
+    $textBlock = $response.content | Where-Object { $_.type -eq 'text' } | Select-Object -First 1
+    if (-not $textBlock) { throw 'Claude API returned no text content.' }
+    return $textBlock.text
 }
 
 function Get-WinOptModuleHeader {
