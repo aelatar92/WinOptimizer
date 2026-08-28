@@ -78,7 +78,7 @@ Right-click **`RunGui.bat`** → **Run as administrator** for a WPF window inste
 
 `Run.bat` / `Main.ps1` (the console menu) are untouched and remain the primary, fully-tested way to use WinOptimizer — the GUI is an additional opt-in entry point under `Gui\`, not a replacement.
 
-> **Known limitation:** this GUI was written and validated (PowerShell syntax + XAML well-formedness, both checked by the test suite) on a Linux dev machine, which has no WPF runtime to actually render or click-test it on. It has not been visually verified yet. If a window fails to open, a button doesn't do what it says, or anything looks broken, please report it with the exact error text — it'll be fixed immediately.
+Visually verified on real Windows 11 (both windows, both languages, including RTL). This caught two real bugs invisible to syntax/well-formedness checks alone: a wrong `xmlns:x` namespace URI that made `XamlReader.Load()` throw on every `x:Name` (the GUI could not open at all until fixed), and module-button text getting truncated instead of wrapping. Both are fixed; the test suite now also calls the real WPF loader, not just an XML well-formedness check, so a regression like the namespace bug can't hide again. If anything still looks or behaves wrong, please report it with the exact error text.
 
 ## Folders
 

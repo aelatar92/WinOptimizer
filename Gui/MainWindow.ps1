@@ -37,7 +37,7 @@ $ModuleMap = @{
 
 [xml]$xamlDoc = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml/xml"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="WinOptimizer" Height="620" Width="760"
         Background="#0f1419" WindowStartupLocation="CenterScreen">
     <Window.Resources>
@@ -49,6 +49,13 @@ $ModuleMap = @{
             <Setter Property="Padding" Value="8"/>
             <Setter Property="Margin" Value="5"/>
             <Setter Property="FontSize" Value="13"/>
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
     <DockPanel Margin="10">
@@ -58,9 +65,9 @@ $ModuleMap = @{
             <Button x:Name="BtnLang" Content="EN / AR" Width="90" HorizontalAlignment="Right" Margin="15,0,0,0"/>
         </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Button x:Name="Btn16" Content="Settings" Width="160" Height="40"/>
-            <Button x:Name="BtnHelp" Content="Help" Width="160" Height="40"/>
-            <Button x:Name="BtnExit" Content="Exit" Width="160" Height="40" Background="#3b1219" Foreground="#ff8080"/>
+            <Button x:Name="Btn16" Content="Settings" Width="160" Height="50"/>
+            <Button x:Name="BtnHelp" Content="Help" Width="160" Height="50"/>
+            <Button x:Name="BtnExit" Content="Exit" Width="160" Height="50" Background="#3b1219" Foreground="#ff8080"/>
         </StackPanel>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <UniformGrid x:Name="ModuleGrid" Columns="4" Rows="4"/>

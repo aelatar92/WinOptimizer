@@ -170,6 +170,30 @@ Describe 'WinOptimizer GUI XAML validity' {
             { [xml]$hs.Value } | Should -Not -Throw
         }
     }
+
+    # Well-formed XML is not the same as loadable WPF XAML: a wrong (but
+    # still well-formed) xmlns:x URI passes the check above yet makes
+    # XamlReader.Load throw on every x:Name attribute, which is exactly
+    # what happened here until it was caught by actually rendering the
+    # GUI on a real Windows machine. This test calls the real WPF loader.
+    It 'embedded XAML in <_> actually loads via XamlReader (not just well-formed XML)' -ForEach $guiFiles -Skip:($PSVersionTable.PSEdition -eq 'Core' -and -not $IsWindows) {
+        $full = Join-Path $script:projectRoot $_
+        Add-Type -AssemblyName PresentationFramework -ErrorAction Stop
+        Add-Type -AssemblyName PresentationCore -ErrorAction Stop
+        Add-Type -AssemblyName WindowsBase -ErrorAction Stop
+        Add-Type -AssemblyName System.Xaml -ErrorAction Stop
+
+        $tokens = $null
+        $errs = $null
+        [void][System.Management.Automation.Language.Parser]::ParseFile($full, [ref]$tokens, [ref]$errs)
+        $hereStrings = @($tokens | Where-Object { $_.Kind -eq 'HereStringExpandable' -or $_.Kind -eq 'HereStringLiteral' })
+        foreach ($hs in $hereStrings) {
+            [xml]$xamlDoc = $hs.Value
+            if ($xamlDoc.DocumentElement.LocalName -notin @('Window', 'Page', 'UserControl')) { continue }
+            $reader = New-Object System.Xml.XmlNodeReader $xamlDoc
+            { [Windows.Markup.XamlReader]::Load($reader) } | Should -Not -Throw
+        }
+    }
 }
 
 Describe 'WinOptimizer Local AI integration' {

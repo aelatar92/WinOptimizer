@@ -7,8 +7,8 @@ function Show-WinOptSettingsWindow {
 
     [xml]$xamlDoc = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml/xml"
-        Title="WinOptimizer Settings" Height="460" Width="520"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="WinOptimizer Settings" Height="560" Width="520"
         Background="#0f1419" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
     <Window.Resources>
         <Style TargetType="Button">
