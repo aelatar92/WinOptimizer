@@ -146,8 +146,9 @@ function Show-WinOptSettingsWindow {
         if (-not $url) { Show-WinOptInfo -Message 'No updateCheckUrl in config.'; return }
         try {
             $remote = Invoke-RestMethod -Uri $url -TimeoutSec 5
-            if ($remote.version -and $remote.version -ne $script:WinOptVersion) {
-                Show-WinOptInfo -Message "Update available: $($remote.version) (you have $script:WinOptVersion)"
+            $remoteVer = if ($remote.tag_name) { $remote.tag_name.TrimStart('v') } else { $remote.version }
+            if ($remoteVer -and $remoteVer -ne $script:WinOptVersion) {
+                Show-WinOptInfo -Message "Update available: $remoteVer (you have $script:WinOptVersion)"
             } else {
                 Show-WinOptInfo -Message 'You are up to date (or could not compare).'
             }

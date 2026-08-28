@@ -31,7 +31,8 @@ do {
         '2' {
             $name = Read-Host 'Service name'
             $meta = $ServiceCatalog | Where-Object Name -eq $name
-            if ($meta -and $meta.Risk -eq 'high' -and -not (Confirm-WinOptRisky "Disable $name")) { break }
+            $prompt = if ($meta) { "Disable $name" } else { "Disable '$name'? It is not in the known catalog - disabling the wrong service can destabilize the system." }
+            if (-not (Confirm-WinOptRisky $prompt)) { break }
             if ($script:WinOptConfig.requireRestorePointBeforeRisky) { Ensure-WinOptRestorePoint -Description "Before_Disable_$name" }
             Stop-Service -Name $name -Force -ErrorAction SilentlyContinue
             Set-Service -Name $name -StartupType Disabled -ErrorAction SilentlyContinue

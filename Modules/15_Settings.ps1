@@ -95,7 +95,7 @@ do {
             if ($url) {
                 try {
                     $remote = Invoke-RestMethod -Uri $url -TimeoutSec 5
-                    $remoteVer = $remote.version
+                    $remoteVer = if ($remote.tag_name) { $remote.tag_name.TrimStart('v') } else { $remote.version }
                     if ($remoteVer -and $remoteVer -ne $script:WinOptVersion) {
                         Write-Host "Update available: $remoteVer (you have $script:WinOptVersion)" -ForegroundColor Yellow
                     } else {

@@ -1,4 +1,4 @@
-Describe 'WinOptimizer file structure' {
+﻿Describe 'WinOptimizer file structure' {
     BeforeAll {
         $script:projectRoot = Split-Path $PSScriptRoot -Parent
     }
@@ -220,7 +220,7 @@ Describe 'WinOptimizer Windows-only functionality' {
         Initialize-WinOpt -Root $script:projectRoot
     }
 
-    It 'returns health score 0-100' -Skip:(-not $IsWindows) {
+    It 'returns health score 0-100' -Skip:($PSVersionTable.PSEdition -eq 'Core' -and -not $IsWindows) {
         $h = Get-WinOptHealthScore
         $h.Score | Should -BeGreaterThan 0
         $h.Score | Should -BeLessThan 101
