@@ -101,6 +101,10 @@ Invoke-Pester -Path .\Tests\WinOptimizer.Tests.ps1
 
 Run **`Run-WT.bat`** if you use Windows Terminal (optional; `Run.bat` is the main launcher).
 
+## Optional: System Tray health monitor
+
+Run **`RunTray.bat`** to start a background tray icon that shows the live health score (the same one from Module 4's Health Score option) in its tooltip, refreshing every 30 minutes or on demand from its right-click menu. Read-only, doesn't need Administrator, doesn't change anything. Right-click it for **Refresh now**, **Open WinOptimizer**, or **Exit**.
+
 ## Releases / packaging
 
 Tagged releases are packaged and published automatically by `.github/workflows/release.yml`: it stages the end-user files (`Main.ps1`, `Run.bat`, `Run-WT.bat`, `RunGui.bat`, `Lib/`, `Modules/`, `Gui/`, `config.json`, `README.md` — `Tests/` and `.github/` are left out), zips them, and publishes them as a GitHub Release asset.
