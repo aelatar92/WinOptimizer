@@ -77,6 +77,18 @@ function Show-WinOptSettingsWindow {
                 </StackPanel>
             </GroupBox>
 
+            <GroupBox Header="Local AI (free, offline via Ollama)">
+                <StackPanel Margin="8">
+                    <TextBlock x:Name="TxtLocalAIStatus" Text="" Foreground="#8b949e" Margin="0,0,0,8"/>
+                    <CheckBox x:Name="ChkEnableLocalAI" Content="Enable Local AI"/>
+                    <TextBlock Text="Ollama model name (e.g. qwen2.5:3b, llama3.2, phi3):" Margin="0,6,0,0"/>
+                    <TextBox x:Name="TxtLocalAIModel" Margin="0,4,0,4"/>
+                    <WrapPanel>
+                        <Button x:Name="BtnTestLocalAI" Content="Test Connection"/>
+                    </WrapPanel>
+                </StackPanel>
+            </GroupBox>
+
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                 <Button x:Name="BtnSaveClose" Content="Save &amp; Close" Width="120" Background="#1f6f43"/>
                 <Button x:Name="BtnCancel" Content="Cancel" Width="120"/>
@@ -104,6 +116,10 @@ function Show-WinOptSettingsWindow {
     $btnClearKey = $win.FindName('BtnClearKey')
     $chkEnableClaude = $win.FindName('ChkEnableClaude')
     $cmbClaudeModel = $win.FindName('CmbClaudeModel')
+    $txtLocalAIStatus = $win.FindName('TxtLocalAIStatus')
+    $chkEnableLocalAI = $win.FindName('ChkEnableLocalAI')
+    $txtLocalAIModel = $win.FindName('TxtLocalAIModel')
+    $btnTestLocalAI = $win.FindName('BtnTestLocalAI')
     $btnSaveClose = $win.FindName('BtnSaveClose')
     $btnCancel = $win.FindName('BtnCancel')
 
@@ -111,6 +127,12 @@ function Show-WinOptSettingsWindow {
         $enabledText = if ($script:WinOptConfig.enableClaudeAI) { 'ENABLED' } else { 'DISABLED' }
         $keyText = if (Get-WinOptClaudeApiKey) { 'API key: configured' } else { 'API key: not configured' }
         $txtClaudeStatus.Text = "Status: $enabledText | $keyText"
+    }
+
+    function Update-WinOptLocalAIStatusText {
+        $enabledText = if ($script:WinOptConfig.enableLocalAI) { 'ENABLED' } else { 'DISABLED' }
+        $reachText = if (Test-WinOptOllamaReachable) { 'Ollama: reachable' } else { 'Ollama: not reachable' }
+        $txtLocalAIStatus.Text = "Status: $enabledText | $reachText"
     }
 
     if ($script:WinOptMode -eq 'beginner') { $rbBeginner.IsChecked = $true } else { $rbAdvanced.IsChecked = $true }
@@ -125,6 +147,9 @@ function Show-WinOptSettingsWindow {
     }
     if (-not $cmbClaudeModel.SelectedItem) { $cmbClaudeModel.SelectedIndex = 0 }
     Update-WinOptClaudeStatusText
+    $chkEnableLocalAI.IsChecked = [bool]$script:WinOptConfig.enableLocalAI
+    $txtLocalAIModel.Text = $script:WinOptConfig.localAIModel
+    Update-WinOptLocalAIStatusText
 
     $btnRestoreDns.Add_Click({
         Restore-WinOptDnsSnapshot
@@ -174,6 +199,15 @@ function Show-WinOptSettingsWindow {
         Show-WinOptInfo -Message 'API key removed.'
     }.GetNewClosure())
 
+    $btnTestLocalAI.Add_Click({
+        if (Test-WinOptOllamaReachable) {
+            Show-WinOptInfo -Message 'Ollama is reachable at localhost:11434. Ready to use.'
+        } else {
+            Show-WinOptWarning -Message 'Could not reach Ollama at http://localhost:11434. Install it from https://ollama.com and make sure it is running.'
+        }
+        Update-WinOptLocalAIStatusText
+    }.GetNewClosure())
+
     $btnSaveClose.Add_Click({
         $script:WinOptMode = if ($rbBeginner.IsChecked) { 'beginner' } else { 'advanced' }
         $script:WinOptConfig.uiMode = $script:WinOptMode
@@ -181,6 +215,8 @@ function Show-WinOptSettingsWindow {
         if ($cmbLanguage.SelectedItem) { $script:WinOptConfig.language = $cmbLanguage.SelectedItem.Tag }
         $script:WinOptConfig.enableClaudeAI = [bool]$chkEnableClaude.IsChecked
         if ($cmbClaudeModel.SelectedItem) { $script:WinOptConfig.claudeModel = $cmbClaudeModel.SelectedItem.Tag }
+        $script:WinOptConfig.enableLocalAI = [bool]$chkEnableLocalAI.IsChecked
+        if ($txtLocalAIModel.Text) { $script:WinOptConfig.localAIModel = $txtLocalAIModel.Text.Trim() }
         Save-WinOptConfig
         $win.Close()
     }.GetNewClosure())

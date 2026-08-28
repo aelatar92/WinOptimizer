@@ -13,7 +13,8 @@ function Show-Settings-Menu {
     Write-Host (T 'settings_6') -ForegroundColor White
     Write-Host (T 'settings_7') -ForegroundColor White
     Write-Host (T 'settings_8') -ForegroundColor White
-    Write-Host (T 'settings_9') -ForegroundColor Red
+    Write-Host (T 'settings_9') -ForegroundColor White
+    Write-Host (T 'settings_10') -ForegroundColor Red
 }
 
 function Show-ClaudeAI-Settings {
@@ -66,6 +67,47 @@ function Show-ClaudeAI-Settings {
     } while ($cc -ne '5')
 }
 
+function Show-LocalAI-Settings {
+    do {
+        Clear-Host
+        Write-Host (T 'localai_menu_title') -ForegroundColor Yellow
+        $statusText = if ($script:WinOptConfig.enableLocalAI) { T 'localai_menu_enabled' } else { T 'localai_menu_disabled' }
+        $reachText = if (Test-WinOptOllamaReachable) { T 'localai_menu_ready' } else { T 'localai_menu_notready' }
+        Write-Host "$(T 'localai_menu_status') $statusText | $reachText | Model: $($script:WinOptConfig.localAIModel)" -ForegroundColor Gray
+        Write-Host (T 'localai_menu_1') -ForegroundColor White
+        Write-Host (T 'localai_menu_2') -ForegroundColor White
+        Write-Host (T 'localai_menu_3') -ForegroundColor White
+        Write-Host (T 'localai_menu_4') -ForegroundColor Red
+        $lc = Read-Host '>'
+        switch ($lc) {
+            '1' {
+                $script:WinOptConfig.enableLocalAI = -not [bool]$script:WinOptConfig.enableLocalAI
+                Save-WinOptConfig
+                $statusText = if ($script:WinOptConfig.enableLocalAI) { T 'localai_menu_enabled' } else { T 'localai_menu_disabled' }
+                Write-Host "$(T 'localai_toggled') $statusText" -ForegroundColor Cyan
+            }
+            '2' {
+                Write-Host (T 'localai_model_prompt')
+                $m = Read-Host
+                if ($m) {
+                    $script:WinOptConfig.localAIModel = $m
+                    Save-WinOptConfig
+                    Write-Host "$(T 'localai_model_set') $($script:WinOptConfig.localAIModel)" -ForegroundColor Green
+                }
+            }
+            '3' {
+                if (Test-WinOptOllamaReachable) {
+                    Write-Host (T 'localai_test_ok') -ForegroundColor Green
+                } else {
+                    Write-Host "$(T 'localai_test_fail') $($script:WinOptConfig.localAIModel)" -ForegroundColor Yellow
+                }
+            }
+            '4' { return }
+        }
+        if ($lc -ne '4') { Wait-WinOptEnter }
+    } while ($lc -ne '4')
+}
+
 do {
     Show-Settings-Menu
     $c = Read-Host '>'
@@ -112,7 +154,8 @@ do {
             Write-Host "Language / اللغة: $($script:WinOptConfig.language)" -ForegroundColor Green
         }
         '8' { Show-ClaudeAI-Settings }
-        '9' { break }
+        '9' { Show-LocalAI-Settings }
+        '10' { break }
     }
-    if ($c -ne '9' -and $c -ne '8') { Wait-WinOptEnter }
-} while ($c -ne '9')
+    if ($c -ne '10' -and $c -ne '8' -and $c -ne '9') { Wait-WinOptEnter }
+} while ($c -ne '10')

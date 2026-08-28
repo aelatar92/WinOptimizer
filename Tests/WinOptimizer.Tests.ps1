@@ -108,6 +108,18 @@ Describe 'WinOptimizer Common library - config and i18n' {
         $script:WinOptConfig.autoCreateRestorePoint = $false
         Save-WinOptConfig
     }
+
+    It 'Save-WinOptConfig round-trips the local AI model name' {
+        $script:WinOptConfig.localAIModel = 'llama3.2'
+        Save-WinOptConfig
+
+        Import-WinOptConfig
+
+        $script:WinOptConfig.localAIModel | Should -Be 'llama3.2'
+
+        $script:WinOptConfig.localAIModel = 'qwen2.5:3b'
+        Save-WinOptConfig
+    }
 }
 
 Describe 'WinOptimizer HTML report export' {
@@ -210,6 +222,60 @@ Describe 'WinOptimizer Claude AI integration' {
             $Body -match 'claude-sonnet-5'
         }
         Remove-Item Env:\ANTHROPIC_API_KEY -ErrorAction SilentlyContinue
+    }
+}
+
+Describe 'WinOptimizer Local AI integration' {
+    BeforeAll {
+        $script:projectRoot = Split-Path $PSScriptRoot -Parent
+        $script:tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("WinOptTest_" + [guid]::NewGuid())
+        New-Item -Path $script:tempRoot -ItemType Directory -Force | Out-Null
+        . (Join-Path $script:projectRoot 'Lib\Common.ps1')
+        Initialize-WinOpt -Root $script:tempRoot
+    }
+    AfterAll {
+        Remove-Item -Path $script:tempRoot -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
+    It 'Test-WinOptOllamaReachable is true when Ollama responds' {
+        Mock -CommandName Invoke-RestMethod -MockWith { [pscustomobject]@{ models = @() } }
+        Test-WinOptOllamaReachable | Should -Be $true
+    }
+
+    It 'Test-WinOptOllamaReachable is false when Ollama is unreachable' {
+        Mock -CommandName Invoke-RestMethod -MockWith { throw 'connection refused' }
+        Test-WinOptOllamaReachable | Should -Be $false
+    }
+
+    It 'Test-WinOptLocalAIReady is false when disabled even if Ollama is reachable' {
+        Mock -CommandName Invoke-RestMethod -MockWith { [pscustomobject]@{ models = @() } }
+        $script:WinOptConfig.enableLocalAI = $false
+        Test-WinOptLocalAIReady | Should -Be $false
+    }
+
+    It 'Test-WinOptLocalAIReady is true when enabled and Ollama is reachable' {
+        Mock -CommandName Invoke-RestMethod -MockWith { [pscustomobject]@{ models = @() } }
+        $script:WinOptConfig.enableLocalAI = $true
+        Test-WinOptLocalAIReady | Should -Be $true
+        $script:WinOptConfig.enableLocalAI = $false
+    }
+
+    It 'Invoke-WinOptLocalAI calls the Ollama chat API with the configured model and parses the response' {
+        $script:WinOptConfig.localAIModel = 'qwen2.5:3b'
+        Mock -CommandName Invoke-RestMethod -MockWith {
+            [pscustomobject]@{ message = [pscustomobject]@{ role = 'assistant'; content = 'Mocked local analysis.' } }
+        }
+        $result = Invoke-WinOptLocalAI -SystemPrompt 'You are a helper' -UserPrompt '{"disk":"ok"}'
+        $result | Should -Be 'Mocked local analysis.'
+        Should -Invoke -CommandName Invoke-RestMethod -Times 1 -ParameterFilter {
+            $Uri -eq 'http://localhost:11434/api/chat' -and
+            $Body -match 'qwen2.5:3b'
+        }
+    }
+
+    It 'Invoke-WinOptLocalAI throws a clear error when Ollama is unreachable' {
+        Mock -CommandName Invoke-RestMethod -MockWith { throw 'connection refused' }
+        { Invoke-WinOptLocalAI -SystemPrompt 'sys' -UserPrompt 'user' } | Should -Throw '*Could not reach Ollama*'
     }
 }
 

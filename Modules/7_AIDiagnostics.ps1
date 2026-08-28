@@ -12,7 +12,8 @@ function Show-AI-Menu {
     Write-Host "  [3] View Full System Specs, Network Topology and Upgrade Path -------- [EXPANDED]" -ForegroundColor Green
     Write-Host "  [4] Health Score + HTML Report --------------------------------------- [NEW]" -ForegroundColor Cyan
     Write-Host "  $(T 'ai_option_5')" -ForegroundColor Magenta
-    Write-Host "  $(T 'ai_option_6')" -ForegroundColor Red
+    Write-Host "  $(T 'ai_option_6')" -ForegroundColor Blue
+    Write-Host "  $(T 'ai_option_7')" -ForegroundColor Red
     Write-Host "======================================================================================" -ForegroundColor Magenta
 }
 
@@ -40,6 +41,15 @@ function Get-WinOptDiagnosticSnapshot {
     }
 }
 
+function Get-WinOptExpertSystemPrompt {
+    $lang = if ($script:WinOptConfig.language -eq 'ar') { 'Arabic' } else { 'English' }
+    return "You are a senior Windows systems engineer embedded in a Windows maintenance tool called WinOptimizer. " +
+        "You are given a live diagnostic snapshot of the user's PC as JSON. Respond in $lang. " +
+        "Give: (1) a one-line overall verdict, (2) up to 3 prioritized issues with concrete fixes, referencing WinOptimizer's own menu options where relevant " +
+        "(1=OS cleanup, 2=Disk tools, 8=Startup manager, 9=Services, 10=Advanced cleanup, 16=Smart Profiles), " +
+        "(3) one preventive tip. Keep the whole answer under 180 words and do not repeat the raw numbers back verbatim."
+}
+
 function Invoke-ClaudeExpertAnalysis {
     Clear-Host
     if (-not (Test-WinOptClaudeAIReady)) {
@@ -49,12 +59,7 @@ function Invoke-ClaudeExpertAnalysis {
     }
 
     $snapshot = Get-WinOptDiagnosticSnapshot
-    $lang = if ($script:WinOptConfig.language -eq 'ar') { 'Arabic' } else { 'English' }
-    $systemPrompt = "You are a senior Windows systems engineer embedded in a Windows maintenance tool called WinOptimizer. " +
-        "You are given a live diagnostic snapshot of the user's PC as JSON. Respond in $lang. " +
-        "Give: (1) a one-line overall verdict, (2) up to 3 prioritized issues with concrete fixes, referencing WinOptimizer's own menu options where relevant " +
-        "(1=OS cleanup, 2=Disk tools, 8=Startup manager, 9=Services, 10=Advanced cleanup, 16=Smart Profiles), " +
-        "(3) one preventive tip. Keep the whole answer under 180 words and do not repeat the raw numbers back verbatim."
+    $systemPrompt = Get-WinOptExpertSystemPrompt
     $userPrompt = $snapshot | ConvertTo-Json -Depth 4
 
     Write-Host (T 'ai_claude_working') -ForegroundColor Cyan
@@ -73,9 +78,37 @@ function Invoke-ClaudeExpertAnalysis {
     Wait-WinOptEnter
 }
 
+function Invoke-LocalAIExpertAnalysis {
+    Clear-Host
+    if (-not (Test-WinOptLocalAIReady)) {
+        Write-Host (T 'ai_local_disabled') -ForegroundColor Yellow
+        Wait-WinOptEnter
+        return
+    }
+
+    $snapshot = Get-WinOptDiagnosticSnapshot
+    $systemPrompt = Get-WinOptExpertSystemPrompt
+    $userPrompt = $snapshot | ConvertTo-Json -Depth 4
+
+    Write-Host (T 'ai_local_working') -ForegroundColor Cyan
+    try {
+        $analysis = Invoke-WinOptLocalAI -SystemPrompt $systemPrompt -UserPrompt $userPrompt
+        Write-Host "`n======================================================================================" -ForegroundColor Magenta
+        Write-Host "  $(T 'ai_local_title')" -ForegroundColor Yellow
+        Write-Host "======================================================================================" -ForegroundColor Magenta
+        Write-Host $analysis -ForegroundColor White
+        Write-Host "======================================================================================" -ForegroundColor Magenta
+        Write-WinOptLog "Local AI analysis delivered (model=$($script:WinOptConfig.localAIModel))"
+    } catch {
+        Write-Host "$(T 'ai_local_error') $_" -ForegroundColor Red
+        Write-WinOptLog "Local AI request failed: $_" 'ERROR'
+    }
+    Wait-WinOptEnter
+}
+
 do {
     Show-AI-Menu
-    $aiChoice = Read-Host "Select an option (1-6)"
+    $aiChoice = Read-Host "Select an option (1-7)"
 
     if ($aiChoice -eq '1') {
         Clear-Host
@@ -395,4 +428,8 @@ do {
     elseif ($aiChoice -eq '5') {
         Invoke-ClaudeExpertAnalysis
     }
-} while ($aiChoice -ne '6')
+
+    elseif ($aiChoice -eq '6') {
+        Invoke-LocalAIExpertAnalysis
+    }
+} while ($aiChoice -ne '7')

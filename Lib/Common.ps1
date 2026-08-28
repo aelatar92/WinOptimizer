@@ -90,11 +90,31 @@ $script:WinOptStrings = @{
         profiles_applying    = 'Applying profile:'
         profiles_done        = 'Profile applied.'
         ai_option_5          = '[5] Ask Claude AI for a real expert analysis --------------------- [REAL AI]'
-        ai_option_6          = '[6] Back to Main Menu ------------------------------------------------ [BACK]'
+        ai_option_6          = '[6] Ask Local AI (Ollama, free & offline) ------------------------- [LOCAL AI]'
+        ai_option_7          = '[7] Back to Main Menu ------------------------------------------------ [BACK]'
         ai_claude_disabled   = 'Claude AI is not set up. Go to Settings (15) -> 8 to add your API key and enable it.'
         ai_claude_working    = 'Contacting Claude AI for a real expert analysis...'
         ai_claude_error      = 'Claude AI request failed:'
         ai_claude_title      = 'CLAUDE AI EXPERT ANALYSIS'
+        ai_local_disabled    = 'Local AI is not set up. Go to Settings (15) -> 9 to enable it (requires Ollama running locally).'
+        ai_local_working     = 'Contacting local AI (Ollama)...'
+        ai_local_error       = 'Local AI request failed:'
+        ai_local_title       = 'LOCAL AI EXPERT ANALYSIS (OLLAMA)'
+        localai_menu_title    = '=== Local AI Settings (Ollama) ==='
+        localai_menu_status   = 'Status:'
+        localai_menu_enabled  = 'ENABLED'
+        localai_menu_disabled = 'DISABLED'
+        localai_menu_ready    = 'Ollama: reachable at localhost:11434'
+        localai_menu_notready = 'Ollama: not reachable (is it installed and running?)'
+        localai_menu_1        = '1. Toggle enabled/disabled'
+        localai_menu_2        = '2. Set model name'
+        localai_menu_3        = '3. Test connection'
+        localai_menu_4        = '4. Back'
+        localai_model_prompt  = 'Model name (as pulled in Ollama, e.g. qwen2.5:3b, llama3.2, phi3):'
+        localai_toggled       = 'Local AI is now:'
+        localai_model_set     = 'Model set to:'
+        localai_test_ok       = 'Ollama is reachable. Ready to use.'
+        localai_test_fail     = 'Could not reach Ollama at http://localhost:11434. Install it from https://ollama.com, make sure it is running, then run: ollama pull'
     }
     ar = @{
         admin_required       = 'مطلوب صلاحيات المسؤول (Administrator). شغّل Run.bat كمسؤول.'
@@ -150,7 +170,8 @@ $script:WinOptStrings = @{
         settings_6           = '6. التحقق من التحديثات'
         settings_7           = '7. اللغة (English / عربي)'
         settings_8           = '8. إعدادات Claude AI (تشخيص ذكي حقيقي: مفتاح API، تفعيل، الموديل)'
-        settings_9           = '9. رجوع'
+        settings_9           = '9. الذكاء الاصطناعي المحلي (Ollama - مجاني وأوفلاين، بدون مفتاح API)'
+        settings_10          = '10. رجوع'
         claude_menu_title    = '=== إعدادات Claude AI ==='
         claude_menu_status   = 'الحالة:'
         claude_menu_enabled  = 'مفعّل'
@@ -179,11 +200,31 @@ $script:WinOptStrings = @{
         profiles_applying    = 'جارٍ تطبيق البروفايل:'
         profiles_done        = 'تم تطبيق البروفايل.'
         ai_option_5          = '[5] اسأل Claude AI تحليل خبير حقيقي --------------------------- [ذكاء اصطناعي حقيقي]'
-        ai_option_6          = '[6] رجوع للقائمة الرئيسية ---------------------------------------- [رجوع]'
+        ai_option_6          = '[6] اسأل الذكاء الاصطناعي المحلي (Ollama، مجاني وأوفلاين) ------------ [محلي]'
+        ai_option_7          = '[7] رجوع للقائمة الرئيسية ---------------------------------------- [رجوع]'
         ai_claude_disabled   = 'Claude AI غير مفعّل. اذهب للإعدادات (15) -> 8 عشان تضيف مفتاح API وتفعّله.'
         ai_claude_working    = 'جارٍ التواصل مع Claude AI لعمل تحليل خبير حقيقي...'
         ai_claude_error      = 'فشل طلب Claude AI:'
         ai_claude_title      = 'تحليل خبير من Claude AI'
+        ai_local_disabled    = 'الذكاء الاصطناعي المحلي غير مُعد. اذهب للإعدادات (15) -> 9 لتفعيله (يتطلب تشغيل Ollama محليًا).'
+        ai_local_working     = 'جارٍ التواصل مع الذكاء الاصطناعي المحلي (Ollama)...'
+        ai_local_error       = 'فشل طلب الذكاء الاصطناعي المحلي:'
+        ai_local_title       = 'تحليل خبير من الذكاء الاصطناعي المحلي (Ollama)'
+        localai_menu_title    = '=== إعدادات الذكاء الاصطناعي المحلي (Ollama) ==='
+        localai_menu_status   = 'الحالة:'
+        localai_menu_enabled  = 'مفعّل'
+        localai_menu_disabled = 'معطّل'
+        localai_menu_ready    = 'Ollama: متاح على localhost:11434'
+        localai_menu_notready = 'Ollama: غير متاح (هل هو مثبت ومُشغّل؟)'
+        localai_menu_1        = '1. تفعيل/تعطيل'
+        localai_menu_2        = '2. ضبط اسم الموديل'
+        localai_menu_3        = '3. اختبار الاتصال'
+        localai_menu_4        = '4. رجوع'
+        localai_model_prompt  = 'اسم الموديل (كما تم تنزيله في Ollama، مثل qwen2.5:3b أو llama3.2 أو phi3):'
+        localai_toggled       = 'الذكاء الاصطناعي المحلي الآن:'
+        localai_model_set     = 'تم ضبط الموديل على:'
+        localai_test_ok       = 'Ollama متاح. جاهز للاستخدام.'
+        localai_test_fail     = 'تعذّر الوصول إلى Ollama على http://localhost:11434. ثبّته من https://ollama.com وتأكد إنه شغّال، وبعدين شغّل: ollama pull'
     }
 }
 
@@ -246,6 +287,7 @@ function Import-WinOptConfig {
         language = 'en'
         enableSmartProfiles = $true
         enableLocalAI = $false
+        localAIModel = 'qwen2.5:3b'
         autoCreateRestorePoint = $false
         enableClaudeAI = $false
         claudeModel = 'claude-sonnet-5'
@@ -285,6 +327,7 @@ function Save-WinOptConfig {
         language = $script:WinOptConfig.language
         enableSmartProfiles = [bool]$script:WinOptConfig.enableSmartProfiles
         enableLocalAI = [bool]$script:WinOptConfig.enableLocalAI
+        localAIModel = $script:WinOptConfig.localAIModel
         autoCreateRestorePoint = [bool]$script:WinOptConfig.autoCreateRestorePoint
         enableClaudeAI = [bool]$script:WinOptConfig.enableClaudeAI
         claudeModel = $script:WinOptConfig.claudeModel
@@ -653,6 +696,43 @@ function Invoke-WinOptClaudeAI {
     $textBlock = $response.content | Where-Object { $_.type -eq 'text' } | Select-Object -First 1
     if (-not $textBlock) { throw 'Claude API returned no text content.' }
     return $textBlock.text
+}
+
+function Test-WinOptOllamaReachable {
+    try {
+        Invoke-RestMethod -Uri 'http://localhost:11434/api/tags' -TimeoutSec 2 -ErrorAction Stop | Out-Null
+        return $true
+    } catch {
+        return $false
+    }
+}
+
+function Test-WinOptLocalAIReady {
+    return [bool]($script:WinOptConfig.enableLocalAI -and (Test-WinOptOllamaReachable))
+}
+
+function Invoke-WinOptLocalAI {
+    param(
+        [Parameter(Mandatory)][string]$SystemPrompt,
+        [Parameter(Mandatory)][string]$UserPrompt
+    )
+    $model = if ($script:WinOptConfig.localAIModel) { $script:WinOptConfig.localAIModel } else { 'qwen2.5:3b' }
+    $payload = @{
+        model    = $model
+        messages = @(
+            @{ role = 'system'; content = $SystemPrompt }
+            @{ role = 'user'; content = $UserPrompt }
+        )
+        stream   = $false
+    } | ConvertTo-Json -Depth 8
+
+    try {
+        $response = Invoke-RestMethod -Uri 'http://localhost:11434/api/chat' -Method Post -Body $payload -ContentType 'application/json' -TimeoutSec 90 -ErrorAction Stop
+    } catch {
+        throw "Could not reach Ollama at http://localhost:11434 (model '$model'). Install it from https://ollama.com, make sure it's running, then run: ollama pull $model"
+    }
+    if (-not $response.message.content) { throw 'Local AI returned no content.' }
+    return $response.message.content
 }
 
 function Get-WinOptModuleHeader {

@@ -60,9 +60,23 @@ Module 7 ("Smart Diagnostics") has a genuine AI-powered option (`[5] Ask Claude 
 
 This is a paid API — check [Anthropic's pricing](https://www.anthropic.com/pricing) for the model you pick. Everything else in WinOptimizer keeps working exactly as before if you never touch this; `enableClaudeAI` defaults to `false`.
 
+## Local AI (free, offline diagnostics via Ollama)
+
+Don't want to pay for an API? Module 7 also has `[6] Ask Local AI (Ollama, free & offline)`, which runs the same diagnostic-analysis prompt against a model running entirely on your own PC via [Ollama](https://ollama.com) — no API key, no per-request cost, no internet needed after the model is downloaded.
+
+**Setup:**
+1. Install [Ollama](https://ollama.com) (or `winget install Ollama.Ollama`) and pull a model, e.g. `ollama pull qwen2.5:3b` (small, fast, and multilingual — a good match for this app's English/Arabic UI). Any chat-capable Ollama model works; set its exact name in step 2.
+2. In WinOptimizer, go to **Settings (15) → 9 (Local AI)**:
+   - Option 1 to enable it.
+   - Option 2 to set the model name (must match what you pulled in Ollama, e.g. `qwen2.5:3b`, `llama3.2`, `phi3`).
+   - Option 3 to test the connection to Ollama.
+3. Ollama runs its own local server automatically once installed (`http://localhost:11434`) — WinOptimizer just talks to it.
+
+`enableLocalAI` defaults to `false` and doesn't touch anything else in the app.
+
 ## GUI (experimental)
 
-Right-click **`RunGui.bat`** → **Run as administrator** for a WPF window instead of the console menu: click any of the 16 module buttons to launch that module in its own console window (unchanged, same as running it from the text menu), or use the **Settings** button for a full graphical settings dialog (UI mode, language, rollback actions, and the Claude AI panel — API key, enable toggle, model picker) instead of typing numbers. A language button switches English/Arabic instantly, including right-to-left layout.
+Right-click **`RunGui.bat`** → **Run as administrator** for a WPF window instead of the console menu: click any of the 16 module buttons to launch that module in its own console window (unchanged, same as running it from the text menu), or use the **Settings** button for a full graphical settings dialog (UI mode, language, rollback actions, the Claude AI panel — API key, enable toggle, model picker — and the Local AI panel — enable toggle, model name, test connection) instead of typing numbers. A language button switches English/Arabic instantly, including right-to-left layout.
 
 `Run.bat` / `Main.ps1` (the console menu) are untouched and remain the primary, fully-tested way to use WinOptimizer — the GUI is an additional opt-in entry point under `Gui\`, not a replacement.
 

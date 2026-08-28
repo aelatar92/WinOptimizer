@@ -26,6 +26,7 @@
     "updateCheckUrl": "https://api.github.com/repos/aelatar92/WinOptimizer/releases/latest",
     "enableSmartProfiles": true,
     "enableLocalAI": false,
+    "localAIModel": "qwen2.5:3b",
     "language": "en",
     "autoCreateRestorePoint": true,
     "enableClaudeAI": false,
