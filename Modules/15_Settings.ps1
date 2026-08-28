@@ -1,4 +1,4 @@
-$WinOptRoot = Split-Path $PSScriptRoot -Parent
+﻿$WinOptRoot = Split-Path $PSScriptRoot -Parent
 . (Join-Path $WinOptRoot 'Lib\Common.ps1')
 Initialize-WinOptModule -ModuleName 'Settings'
 

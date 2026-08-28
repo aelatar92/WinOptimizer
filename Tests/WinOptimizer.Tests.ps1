@@ -30,6 +30,14 @@ Describe 'WinOptimizer PowerShell syntax' {
         [void][System.Management.Automation.Language.Parser]::ParseFile($full, [ref]$null, [ref]$errs)
         ($errs | Measure-Object).Count | Should -Be 0
     }
+
+    It 'has a UTF-8 BOM if it contains non-ASCII text (else Windows PowerShell 5.1 misreads it)' -ForEach $files {
+        $full = Join-Path $script:projectRoot $_
+        $bytes = [System.IO.File]::ReadAllBytes($full)
+        $hasBom = $bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF
+        $hasNonAscii = @($bytes | Where-Object { $_ -ge 0x80 }).Count -gt 0
+        if ($hasNonAscii) { $hasBom | Should -Be $true }
+    }
 }
 
 Describe 'WinOptimizer Common library - config and i18n' {

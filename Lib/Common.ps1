@@ -1,4 +1,4 @@
-# WinOptimizer shared library v2.0
+﻿# WinOptimizer shared library v2.0
 $script:WinOptVersion = '2.0.0'
 $script:WinOptRoot = $null
 $script:WinOptConfig = $null

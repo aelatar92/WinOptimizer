@@ -1,4 +1,4 @@
-# WinOptimizer Settings - WPF dialog (companion to Gui/MainWindow.ps1).
+﻿# WinOptimizer Settings - WPF dialog (companion to Gui/MainWindow.ps1).
 # Reuses the same Lib/Common.ps1 functions as the console Settings module (15) -
 # no duplicated config/backup/Claude-key logic, only a different front end.
 
