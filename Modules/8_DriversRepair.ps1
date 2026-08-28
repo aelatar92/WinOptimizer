@@ -9,7 +9,7 @@ function Show-Repair-Menu {
     Write-Host "====================================================" -ForegroundColor Cyan
     Write-Host "1. Repair MS Store & Reset Icon Cache       [OFFLINE]" -ForegroundColor White
     Write-Host "2. Backup 3rd-Party System Drivers          [OFFLINE]" -ForegroundColor White
-    Write-Host "3. Repair & Restart Core Drivers & Services [OFFLINE]" -ForegroundColor Green
+    Write-Host "3. Restart Audio Service & Refresh Group Policy [OFFLINE]" -ForegroundColor Green
     Write-Host "4. Full Reset of Print Spooler Subsystem    [OFFLINE]" -ForegroundColor White
     Write-Host "5. Back to Main Menu" -ForegroundColor Red
     Write-Host "====================================================" -ForegroundColor Cyan
@@ -60,7 +60,7 @@ do {
             
             Export-WindowsDriver -Online -Destination $BackupPath -ErrorAction SilentlyContinue | Out-Null
             
-            Write-Host "`n[*] Drivers backed up perfectly at: $BackupPath" -ForegroundColor Green
+            Write-Host "`n[*] Drivers exported to: $BackupPath" -ForegroundColor Green
             Write-Host "====================================================" -ForegroundColor Cyan
             Read-Host "Press Enter to return to Repair Menu..."
         }
@@ -68,29 +68,25 @@ do {
         '3' {
             Clear-Host
             Write-Host "====================================================" -ForegroundColor Cyan
-            Write-Host "    [EXECUTING] Repair Core Drivers & Services      " -ForegroundColor Yellow
+            Write-Host "    [EXECUTING] Restart Audio Service & Refresh Group Policy" -ForegroundColor Yellow
             Write-Host "====================================================" -ForegroundColor Cyan
-            Write-Host "[WHAT]  : Refreshes Windows Audio architecture and forces Secure Boot certificate sync." -ForegroundColor White
-            Write-Host "[WHY]   : Fixes sudden crashes in services like Dolby DAX API, Realtek, and boot logs." -ForegroundColor White
+            Write-Host "[WHAT]  : Restarts the Windows Audio service (Audiosrv) and re-applies Group Policy (gpupdate /force)." -ForegroundColor White
+            Write-Host "[WHY]   : Useful if audio stopped working or Group Policy changes haven't taken effect. Won't fix driver-specific issues (e.g. a specific audio driver crashing) - use Windows Update or Device Manager for that." -ForegroundColor White
             Write-Host "[MODE]  : OFFLINE" -ForegroundColor Green
             Write-Host "----------------------------------------------------" -ForegroundColor Gray
 
-            # Step 1: Repair Audio Stack (Fixing Dolby Crash)
-            Write-Host "[Step 1/2] Restarting Windows Audio core infrastructure..." -ForegroundColor Cyan
+            Write-Host "[Step 1/2] Restarting Windows Audio service (Audiosrv)..." -ForegroundColor Cyan
             Restart-Service -Name "Audiosrv" -Force -ErrorAction SilentlyContinue
-            Write-Host " -> Core Audio Service (Audiosrv) successfully cycled and restarted." -ForegroundColor Green
+            Write-Host " -> Audiosrv restarted." -ForegroundColor Green
             Start-Sleep -Seconds 1
-            
-            # Step 2: Clear/Sync Component Servicing (Fixing Secure Boot Warning state)
-            Write-Host "`n[Step 2/2] Triggering Windows Component Integrity Live Sync..." -ForegroundColor Cyan
-            
-            # [FIXED] Executing directly and piping to Out-Null to eliminate unassigned variable warning
+
+            Write-Host "`n[Step 2/2] Refreshing Group Policy (gpupdate /force)..." -ForegroundColor Cyan
             gpupdate /target:computer /force | Out-Null
-            Write-Host " -> Component service policies re-aligned." -ForegroundColor Green
-            
-            Write-Host "`n[*] Core service diagnostic repair cycle execution finished!" -ForegroundColor Green
+            Write-Host " -> Group Policy refreshed." -ForegroundColor Green
+
+            Write-Host "`n[*] Done." -ForegroundColor Green
             Write-Host "====================================================" -ForegroundColor Cyan
-            Read-Host "Repair Complete! Press Enter to return to menu..."
+            Read-Host "Press Enter to return to Repair Menu..."
         }
 
         '4' {

@@ -89,17 +89,10 @@ do {
         
         Write-Host "[WHAT]  : Scans system health, storage, and event logs for hidden issues." -ForegroundColor White
         Write-Host "[WHY]   : To detect Windows stability errors, hardware bottlenecks, and fix them." -ForegroundColor White
-        Write-Host "[MODE]  : Hybrid rule engine (no external AI API; online = extended heuristics)." -ForegroundColor Green
+        Write-Host "[MODE]  : Rule-based diagnostics, fully offline (no AI - see option 5 for AI analysis)." -ForegroundColor Green
         Write-Host "--------------------------------------------------------------------------------------" -ForegroundColor Gray
 
-        Write-Host "[Step 1/3] Verifying network environment..." -ForegroundColor Cyan
-        $IsOnline = Test-Connection -ComputerName 8.8.8.8 -Count 1 -Quiet
-        
-        if ($IsOnline) { Write-Host " -> Status: ONLINE. Extended diagnostic rules enabled." -ForegroundColor Green } 
-        else { Write-Host " -> Status: OFFLINE. Built-in diagnostic rules only." -ForegroundColor Yellow }
-        Start-Sleep -Seconds 1
-
-        Write-Host "`n[Step 2/3] Collecting system stability telemetry data..." -ForegroundColor Cyan
+        Write-Host "[Step 1/2] Collecting system stability telemetry data..." -ForegroundColor Cyan
         $DriveStatus = Get-Volume | Where-Object { $_.DriveLetter -eq 'C' } | Select-Object -ExpandProperty HealthStatus
         $RecentErrors = Get-WinEvent -FilterHashtable @{ LogName = 'System'; Level = 2 } -MaxEvents 2 -ErrorAction SilentlyContinue | ForEach-Object { $_.Message.SubString(0, [Math]::Min(80, $_.Message.Length)).Trim() }
         $AudioService = Get-Service -Name "Audiosrv" -ErrorAction SilentlyContinue
@@ -110,39 +103,31 @@ do {
         Write-Host " -> Live Audio Subsystem Check: Captured ($LiveAudioStatus)." -ForegroundColor Gray
         Start-Sleep -Seconds 1
 
-        Write-Host "`n[Step 3/3] Generating Intelligence Diagnostic Report..." -ForegroundColor Cyan
+        Write-Host "`n[Step 2/2] Generating diagnostic report..." -ForegroundColor Cyan
         Write-Host "--------------------------------------------------------------------------------------" -ForegroundColor Magenta
         Write-Host "                  DIAGNOSTIC REPORT                 " -ForegroundColor Yellow
         Write-Host "--------------------------------------------------------------------------------------" -ForegroundColor Magenta
 
-        Write-Host " -> Real-Time Subsystem Status:" -ForegroundColor Cyan
-        if ($LiveAudioStatus -eq "Running") { Write-Host "    [*] Core Audio Infrastructure: RUNNING (Healthy and Active)" -ForegroundColor Green } 
-        else { Write-Host "    [!] Core Audio Infrastructure: STOPPED or Missing" -ForegroundColor Red }
-        
-        Write-Host "`n -> Historical Event Logs Audit (Past Events):" -ForegroundColor Cyan
+        Write-Host " -> Audio Service (Audiosrv):" -ForegroundColor Cyan
+        if ($LiveAudioStatus -eq "Running") { Write-Host "    [*] Running" -ForegroundColor Green }
+        else { Write-Host "    [!] Stopped or missing" -ForegroundColor Red }
+
+        Write-Host "`n -> Recent System Log Errors:" -ForegroundColor Cyan
         if ($RecentErrors) {
-            foreach ($Err in $RecentErrors) { Write-Host "    [!] Archive Log: $Err..." -ForegroundColor DarkGray }
+            foreach ($Err in $RecentErrors) { Write-Host "    [!] $Err..." -ForegroundColor DarkGray }
         } else {
-            Write-Host "    [*] Clean Logs: No critical system crashes found." -ForegroundColor Green
+            Write-Host "    [*] None found in recent System log entries." -ForegroundColor Green
         }
         Write-Host "--------------------------------------------------------------------------------------" -ForegroundColor Gray
 
-        if ($IsOnline) {
-            try {
-                Write-Host "[Status] Applying extended online diagnostic rules..." -ForegroundColor Gray
-                if ($RecentErrors -and $LiveAudioStatus -eq "Running") {
-                    $DiagnosticAdvice = "Analysis: Past audio-related errors appear in logs, but Audiosrv is running now. Recommendation: No action required; keep Windows updated."
-                } else {
-                    $DiagnosticAdvice = "Analysis: No active service failures detected. System looks stable from current telemetry."
-                }
-                Write-Host "`n[Diagnostic Summary]:" -ForegroundColor Green
-                Write-Host $DiagnosticAdvice -ForegroundColor White
-            } catch { $IsOnline = $false }
-        }
-        if (-not $IsOnline) {
-            Write-Host "[Status] Processing via built-in offline rule set..." -ForegroundColor Gray
-            if ($LiveAudioStatus -eq "Running") { Write-Host " -> REPAIR VERIFIED: Past log errors detected, but live service validation is ACTIVE." -ForegroundColor Green } 
-            else { Write-Host " -> SYSTEM INSTABILITY: Service is stopped. Run Module 8 Option 3." -ForegroundColor Red }
+        if ($LiveAudioStatus -eq "Running") {
+            if ($RecentErrors) {
+                Write-Host " -> Analysis: Past audio-related errors appear in the logs, but Audiosrv is running now - no action needed." -ForegroundColor Green
+            } else {
+                Write-Host " -> Analysis: No active service failures detected. System looks stable from current telemetry." -ForegroundColor Green
+            }
+        } else {
+            Write-Host " -> Analysis: Audiosrv is stopped. Run Module 8, option 3 to restart it." -ForegroundColor Red
         }
         Write-Host "======================================================================================" -ForegroundColor Magenta
         Read-Host "Diagnostics Complete! Press Enter to return to menu..."
@@ -201,7 +186,7 @@ do {
         else { Write-Host "  -> Windows Update State: No urgent restart flags found" -ForegroundColor Gray }
 
         Write-Host "--------------------------------------------------------------------------------------" -ForegroundColor Magenta
-        Write-Host "        EXPERT TROUBLESHOOTING AND ADVISORY         " -ForegroundColor Yellow
+        Write-Host "              SUGGESTED NEXT STEPS (rule-based)      " -ForegroundColor Yellow
         Write-Host "--------------------------------------------------------------------------------------" -ForegroundColor Magenta
 
         $IssuesFound = 0
@@ -237,7 +222,7 @@ do {
     elseif ($aiChoice -eq '3') {
         Clear-Host
         Write-Host "======================================================================================" -ForegroundColor Cyan
-        Write-Host "   [SYSTEM INGESTION] Full Blueprint, Network Topology and Upgrade Path " -ForegroundColor Yellow
+        Write-Host "        System Specs, Network Info, and Upgrade Path " -ForegroundColor Yellow
         Write-Host "======================================================================================" -ForegroundColor Cyan
         
         Write-Host "[Step 1/5] Extracting Motherboard, BIOS, and Chassis metadata..." -ForegroundColor Cyan
@@ -295,7 +280,7 @@ do {
 
         Clear-Host
         Write-Host "======================================================================================" -ForegroundColor Cyan
-        Write-Host "                        COMPLETE SYSTEM SPECIFICATIONS                                " -ForegroundColor Yellow
+        Write-Host "                            SYSTEM SPECIFICATIONS                                      " -ForegroundColor Yellow
         Write-Host "======================================================================================" -ForegroundColor Cyan
         
         Write-Host " [-] [DEVICE AND MOTHERBOARD IDENTITY]" -ForegroundColor Cyan
@@ -337,7 +322,7 @@ do {
         }
 
         Write-Host "`n======================================================================================" -ForegroundColor Magenta
-        Write-Host "                       LIVE HARDWARE UPGRADE PATH MAPPER                              " -ForegroundColor Yellow
+        Write-Host "                          RAM & STORAGE UPGRADE INFO                                  " -ForegroundColor Yellow
         Write-Host "======================================================================================" -ForegroundColor Magenta
 
         Write-Host " [-] [MEMORY (RAM) UPGRADE PATH]:" -ForegroundColor Cyan

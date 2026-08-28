@@ -64,8 +64,8 @@ do {
             Write-Host "====================================================" -ForegroundColor Magenta
             Write-Host "         Advanced Network & DNS Tweak Manager       " -ForegroundColor Yellow
             Write-Host "====================================================" -ForegroundColor Magenta
-            Write-Host "1. Cloudflare DNS (Best for Gaming & Speed)" -ForegroundColor White
-            Write-Host "2. Google DNS (Best for Stable Browsing)" -ForegroundColor White
+            Write-Host "1. Cloudflare DNS (privacy-focused, fast resolver)" -ForegroundColor White
+            Write-Host "2. Google DNS (widely used, reliable resolver)" -ForegroundColor White
             Write-Host "3. Cloudflare Family (Blocks Ads & Adult Content)" -ForegroundColor White
             Write-Host "4. Keep Current DNS (Only run Network Optimization)" -ForegroundColor White
             Write-Host "====================================================" -ForegroundColor Magenta
@@ -118,20 +118,23 @@ do {
                 Write-Host "[ERROR] IP renewal failed: $_" -ForegroundColor Red
             }
 
-            # Step 3.4: Extra Advanced Network Optimization Tweaks
-            Write-Host "`n[+] Applying TCP/IP Stack & Latency Optimizations..." -ForegroundColor Cyan
+            # Step 3.4: Reset Winsock/TCP stack (a standard "network is broken" fix,
+            # not a guaranteed speed boost - see comments below)
+            Write-Host "`n[+] Resetting Winsock and TCP/IP stack..." -ForegroundColor Cyan
             try {
-                # Reset Winsock and IP configurations
                 & netsh winsock reset | Out-Null
                 & netsh int ip reset | Out-Null
-                
-                # Optimize TCP Global Auto-Tuning Level for smoother throughput
+
+                # Reset TCP auto-tuning to the Windows default (normal) - undoes any
+                # prior non-default setting, does not itself add speed beyond that.
                 & netsh int tcp set global autotuninglevel=normal | Out-Null
-                
-                # Disable Heuristics to prevent Windows from limiting bandwidth
+
+                # Legacy tweak from Windows 7/8-era gaming guides; on modern Windows
+                # 10/11 TCP stacks it has no reliably measured bandwidth effect, but
+                # some users still request it, so it's left as an option here.
                 & netsh int tcp set global heuristics=disabled | Out-Null
-                
-                Write-Host "[SUCCESS] TCP/IP Stack and network bandwidth tweaks applied!" -ForegroundColor Green
+
+                Write-Host "[SUCCESS] Winsock/TCP stack reset and auto-tuning set to default." -ForegroundColor Green
             }
             catch {
                 Write-Host "[WARNING] Some network stack tweaks could not be applied." -ForegroundColor Yellow
