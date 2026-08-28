@@ -88,3 +88,17 @@ Invoke-Pester -Path .\Tests\WinOptimizer.Tests.ps1
 ## Optional: Windows Terminal
 
 Run **`Run-WT.bat`** if you use Windows Terminal (optional; `Run.bat` is the main launcher).
+
+## Releases / packaging
+
+Tagged releases are packaged and published automatically by `.github/workflows/release.yml`: it stages the end-user files (`Main.ps1`, `Run.bat`, `Run-WT.bat`, `RunGui.bat`, `Lib/`, `Modules/`, `Gui/`, `config.json`, `README.md` — `Tests/`, `.github/`, and the maintainer-only `publish-github.ps1` are left out), zips them, and publishes them as a GitHub Release asset.
+
+**To cut a release:**
+1. Bump the version in both `config.json` (`"version"`) and `Lib/Common.ps1` (`$script:WinOptVersion`) — they must match.
+2. Commit that change.
+3. Tag it and push the tag: `git tag v2.1.0 && git push origin v2.1.0` (tag must match the version, e.g. `v2.1.0` for version `2.1.0` — the workflow fails on purpose if they don't match).
+4. CI builds `WinOptimizer-2.1.0.zip` and attaches it to a new GitHub Release for that tag, with auto-generated release notes.
+
+You can also trigger the workflow manually (Actions tab → Release → Run workflow) to get a test build as a downloadable artifact without creating a tag or a public release.
+
+**No code signing yet** — the packaged scripts and `.bat` launchers are unsigned, so Windows SmartScreen may show an "Unknown Publisher" warning on first run. Adding Authenticode signing is a future step once a code-signing certificate is available.

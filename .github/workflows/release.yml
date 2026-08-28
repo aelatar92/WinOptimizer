@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to package for a manual test build (e.g. 2.1.0). No tag or GitHub Release is created.'
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine version and tag
+        id: ver
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+            VERSION="${TAG#v}"
+          else
+            VERSION="${{ inputs.version }}"
+            if [ -z "$VERSION" ]; then VERSION="0.0.0-manual"; fi
+            TAG=""
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Verify config.json version matches the tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          CONFIG_VERSION=$(python3 -c "import json;print(json.load(open('config.json'))['version'])")
+          if [ "$CONFIG_VERSION" != "${{ steps.ver.outputs.version }}" ]; then
+            echo "::error::config.json version ($CONFIG_VERSION) does not match tag version (${{ steps.ver.outputs.version }}). Bump the version in config.json and Lib/Common.ps1 before tagging."
+            exit 1
+          fi
+
+      - name: Build release staging folder
+        run: |
+          STAGE="WinOptimizer-${{ steps.ver.outputs.version }}"
+          mkdir -p "$STAGE/Data" "$STAGE/logs" "$STAGE/reports"
+          cp -r Main.ps1 Run.bat Run-WT.bat RunGui.bat Lib Modules Gui config.json README.md "$STAGE"/
+          cp Data/.gitkeep "$STAGE/Data/.gitkeep"
+          find "$STAGE" -type f | sort
+
+      - name: Zip
+        run: |
+          STAGE="WinOptimizer-${{ steps.ver.outputs.version }}"
+          zip -r "$STAGE.zip" "$STAGE"
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.ver.outputs.tag }}" "WinOptimizer-${{ steps.ver.outputs.version }}.zip" \
+            --title "WinOptimizer ${{ steps.ver.outputs.tag }}" \
+            --generate-notes
+
+      - name: Upload build artifact (manual test builds only)
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: WinOptimizer-${{ steps.ver.outputs.version }}
+          path: WinOptimizer-${{ steps.ver.outputs.version }}.zip
