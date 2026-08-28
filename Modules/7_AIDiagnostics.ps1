@@ -39,7 +39,7 @@ do {
 
         Write-Host "`n[Step 2/3] Collecting system stability telemetry data..." -ForegroundColor Cyan
         $DriveStatus = Get-Volume | Where-Object { $_.DriveLetter -eq 'C' } | Select-Object -ExpandProperty HealthStatus
-        $RecentErrors = Get-EventLog -LogName System -EntryType Error -Newest 2 -ErrorAction SilentlyContinue | ForEach-Object { $_.Message.SubString(0, [Math]::Min(80, $_.Message.Length)).Trim() }
+        $RecentErrors = Get-WinEvent -FilterHashtable @{ LogName = 'System'; Level = 2 } -MaxEvents 2 -ErrorAction SilentlyContinue | ForEach-Object { $_.Message.SubString(0, [Math]::Min(80, $_.Message.Length)).Trim() }
         $AudioService = Get-Service -Name "Audiosrv" -ErrorAction SilentlyContinue
         $LiveAudioStatus = if ($AudioService) { $AudioService.Status } else { "Not Found" }
 

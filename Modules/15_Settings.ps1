@@ -4,14 +4,15 @@ Initialize-WinOptModule -ModuleName 'Settings'
 
 function Show-Settings-Menu {
     Clear-Host
-    Write-Host '=== Settings ===' -ForegroundColor Yellow
-    Write-Host '1. UI Mode (Beginner / Advanced)' -ForegroundColor White
-    Write-Host '2. Toggle risky-action confirmations' -ForegroundColor White
-    Write-Host '3. Restore DNS from backup' -ForegroundColor White
-    Write-Host '4. Restore registry from backup' -ForegroundColor White
-    Write-Host '5. Open logs folder' -ForegroundColor White
-    Write-Host '6. Check for updates' -ForegroundColor White
-    Write-Host '7. Back' -ForegroundColor Red
+    Write-Host (T 'settings_title') -ForegroundColor Yellow
+    Write-Host (T 'settings_1') -ForegroundColor White
+    Write-Host (T 'settings_2') -ForegroundColor White
+    Write-Host (T 'settings_3') -ForegroundColor White
+    Write-Host (T 'settings_4') -ForegroundColor White
+    Write-Host (T 'settings_5') -ForegroundColor White
+    Write-Host (T 'settings_6') -ForegroundColor White
+    Write-Host (T 'settings_7') -ForegroundColor White
+    Write-Host (T 'settings_8') -ForegroundColor Red
 }
 
 do {
@@ -52,7 +53,14 @@ do {
                 } catch { Write-Host "Could not reach update URL: $_" -ForegroundColor Yellow }
             } else { Write-Host 'No updateCheckUrl in config.' -ForegroundColor Gray }
         }
-        '7' { break }
+        '7' {
+            Write-Host '1 = English   2 = Arabic (عربي)'
+            $l = Read-Host
+            $script:WinOptConfig.language = if ($l -eq '2') { 'ar' } else { 'en' }
+            Save-WinOptConfig
+            Write-Host "Language / اللغة: $($script:WinOptConfig.language)" -ForegroundColor Green
+        }
+        '8' { break }
     }
-    if ($c -ne '7') { Wait-WinOptEnter }
-} while ($c -ne '7')
+    if ($c -ne '8') { Wait-WinOptEnter }
+} while ($c -ne '8')

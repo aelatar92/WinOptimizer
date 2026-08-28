@@ -12,8 +12,8 @@ Windows maintenance toolkit — interactive PowerShell menu, logging, beginner m
 ## Quick start
 
 1. Right-click **`Run.bat`** → **Run as administrator**
-2. Choose a module from the menu (1–17)
-3. Use **15** for UI mode (Beginner/Advanced), rollback, and logs
+2. Choose a module from the menu (1–18)
+3. Use **15** for UI mode (Beginner/Advanced), language, rollback, and logs
 
 ## Modules
 
@@ -33,9 +33,18 @@ Windows maintenance toolkit — interactive PowerShell menu, logging, beginner m
 | 12 | Backup & export |
 | 13 | Battery report (laptops) |
 | 14 | Task scheduler |
-| 15 | Settings & rollback |
-| 16 | Help |
-| 17 | Exit |
+| 15 | Settings, rollback & language |
+| 16 | Smart Profiles (Gaming, Battery, Privacy, Developer) |
+| 17 | Help |
+| 18 | Exit |
+
+## Language
+
+Switch between English and Arabic from **Settings (15) → 7**. The setting is saved to `config.json` (`language`) and takes effect immediately.
+
+## Smart Profiles
+
+Module 16 applies a curated bundle of existing tools in one step: a Gaming profile (Ultimate Performance plan + low-latency tweaks + cache clear), Battery Saver, Privacy/Clean, and Developer (installs the `wingetBundles.developer` apps from `config.json`). Disable it by setting `enableSmartProfiles` to `false` in `config.json`.
 
 ## Folders
 

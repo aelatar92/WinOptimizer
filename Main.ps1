@@ -52,33 +52,34 @@ Test-WinOptStartupRequirements
 function Show-Main-Menu {
     Clear-Host
     Write-Host "========================================================================================" -ForegroundColor Cyan
-    Write-Host "  WINDOWS SYSTEM OPTIMIZER v$script:WinOptVersion" -ForegroundColor Yellow
-    Write-Host "  Mode: $script:WinOptMode" -ForegroundColor Gray
+    Write-Host "  $(T 'menu_title') v$script:WinOptVersion" -ForegroundColor Yellow
+    Write-Host "  $(T 'menu_mode') $script:WinOptMode" -ForegroundColor Gray
     Write-Host "========================================================================================" -ForegroundColor Cyan
-    Write-Host "  [1]  Safe OS Optimization & Temp Cleanup" -ForegroundColor White
-    Write-Host "  [2]  Disk Tools (SFC, DISM, chkdsk, Trim)" -ForegroundColor White
-    Write-Host "  [3]  Advanced & Gaming Tweaks" -ForegroundColor White
-    Write-Host "  [4]  Drivers & System Repair" -ForegroundColor White
-    Write-Host "  [5]  Winget Apps Installer" -ForegroundColor White
-    Write-Host "  [6]  Security & Restore Point" -ForegroundColor White
-    Write-Host "  [7]  Smart Diagnostics & Health Score" -ForegroundColor White
-    Write-Host "  [8]  Startup Programs Manager" -ForegroundColor White
-    Write-Host "  [9]  Windows Services Manager" -ForegroundColor White
-    Write-Host "  [10] Advanced Cleanup (Recycle, Delivery)" -ForegroundColor White
-    Write-Host "  [11] Network Tools (Ping, DNS, Speed)" -ForegroundColor White
-    Write-Host "  [12] Backup & Export" -ForegroundColor White
-    Write-Host "  [13] Battery Health Report" -ForegroundColor White
-    Write-Host "  [14] Task Scheduler" -ForegroundColor White
-    Write-Host "  [15] Settings (Mode, Rollback, Logs)" -ForegroundColor White
-    Write-Host "  [16] Help Guide" -ForegroundColor White
-    Write-Host "  [17] Exit" -ForegroundColor Red
+    Write-Host "  $(T 'menu_1')" -ForegroundColor White
+    Write-Host "  $(T 'menu_2')" -ForegroundColor White
+    Write-Host "  $(T 'menu_3')" -ForegroundColor White
+    Write-Host "  $(T 'menu_4')" -ForegroundColor White
+    Write-Host "  $(T 'menu_5')" -ForegroundColor White
+    Write-Host "  $(T 'menu_6')" -ForegroundColor White
+    Write-Host "  $(T 'menu_7')" -ForegroundColor White
+    Write-Host "  $(T 'menu_8')" -ForegroundColor White
+    Write-Host "  $(T 'menu_9')" -ForegroundColor White
+    Write-Host "  $(T 'menu_10')" -ForegroundColor White
+    Write-Host "  $(T 'menu_11')" -ForegroundColor White
+    Write-Host "  $(T 'menu_12')" -ForegroundColor White
+    Write-Host "  $(T 'menu_13')" -ForegroundColor White
+    Write-Host "  $(T 'menu_14')" -ForegroundColor White
+    Write-Host "  $(T 'menu_15')" -ForegroundColor White
+    Write-Host "  $(T 'menu_16')" -ForegroundColor White
+    Write-Host "  $(T 'menu_17')" -ForegroundColor White
+    Write-Host "  $(T 'menu_18')" -ForegroundColor Red
     Write-Host "----------------------------------------------------------------------------------------" -ForegroundColor DarkGray
 }
 
 function Show-Help-Guide {
     Clear-Host
-    Write-Host "Modules 1-7: core tools. 8-14: startup, services, cleanup, network, backup, battery, scheduler." -ForegroundColor Cyan
-    Write-Host "15: settings and rollback. Beginner mode limits menu items. Logs in logs\ folder." -ForegroundColor Gray
+    Write-Host (T 'help_line1') -ForegroundColor Cyan
+    Write-Host (T 'help_line2') -ForegroundColor Gray
     Wait-WinOptEnter
 }
 
@@ -98,9 +99,10 @@ $ModuleMap = @{
     '13' = @{ Path = 'Modules\13_BatteryHealth.ps1'; Num = 13 }
     '14' = @{ Path = 'Modules\14_Scheduler.ps1'; Num = 14 }
     '15' = @{ Path = 'Modules\15_Settings.ps1'; Num = 15 }
+    '16' = @{ Path = 'Modules\16_SmartProfiles.ps1'; Num = 16 }
 }
 
-$menuItems = @(1..17)
+$menuItems = @(1..18)
 if ($script:WinOptMode -eq 'beginner') {
     $menuItems = @($script:WinOptConfig.beginnerAllowedModules)
 }
@@ -108,13 +110,13 @@ if ($script:WinOptMode -eq 'beginner') {
 do {
     Show-Main-Menu
     if ($script:WinOptMode -eq 'beginner') {
-        Write-Host "  (Beginner mode: options $($menuItems -join ', ') only)" -ForegroundColor DarkGray
+        Write-Host "  $((T 'menu_beginner_note') -f ($menuItems -join ', '))" -ForegroundColor DarkGray
     }
-    $MainChoice = Read-Host 'Select option (1-17)'
+    $MainChoice = Read-Host (T 'menu_select')
 
-    if ($MainChoice -eq '16') { Show-Help-Guide; continue }
-    if ($MainChoice -eq '17') {
-        Write-Host "`nWinOptimizer v$script:WinOptVersion - Bye!" -ForegroundColor Green
+    if ($MainChoice -eq '17') { Show-Help-Guide; continue }
+    if ($MainChoice -eq '18') {
+        Write-Host "`n$((T 'menu_exit_bye') -f $script:WinOptVersion)" -ForegroundColor Green
         Write-WinOptLog 'Application exit'
         Start-Sleep -Seconds 1
         break

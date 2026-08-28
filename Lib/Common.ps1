@@ -7,25 +7,134 @@ $script:WinOptCurrentModule = 'Core'
 $script:WinOptLogPath = $null
 
 $script:WinOptStrings = @{
-    admin_required       = 'Administrator rights required. Run Run.bat as Administrator.'
-    press_enter          = 'Press Enter to continue...'
-    press_enter_menu     = 'Press Enter to return to the Main Menu...'
-    invalid_choice       = 'Invalid selection.'
-    module_missing       = 'Module not found:'
-    module_blocked       = 'This module is hidden in Beginner mode. Switch to Advanced in Settings (15).'
-    confirm_risky        = 'WARNING: This action may affect system stability. Type YES to continue:'
-    restore_creating     = 'Creating system restore point...'
-    restore_ok           = 'Restore point created.'
-    restore_fail         = 'Could not create restore point:'
-    requirements_title   = 'Startup system check'
-    req_ok               = '[OK]'
-    req_warn             = '[WARN]'
-    req_fail             = '[FAIL]'
-    log_started          = 'Session started'
-    rollback_saved       = 'Rollback snapshot saved.'
-    rollback_restored    = 'Rollback restored from:'
-    health_score         = 'System Health Score'
-    html_report_saved    = 'HTML report saved:'
+    en = @{
+        admin_required       = 'Administrator rights required. Run Run.bat as Administrator.'
+        press_enter          = 'Press Enter to continue...'
+        press_enter_menu     = 'Press Enter to return to the Main Menu...'
+        invalid_choice       = 'Invalid selection.'
+        module_missing       = 'Module not found:'
+        module_blocked       = 'This module is hidden in Beginner mode. Switch to Advanced in Settings (15).'
+        confirm_risky        = 'WARNING: This action may affect system stability. Type YES to continue:'
+        restore_creating     = 'Creating system restore point...'
+        restore_ok           = 'Restore point created.'
+        restore_fail         = 'Could not create restore point:'
+        requirements_title   = 'Startup system check'
+        req_ok               = '[OK]'
+        req_warn             = '[WARN]'
+        req_fail             = '[FAIL]'
+        log_started          = 'Session started'
+        rollback_saved       = 'Rollback snapshot saved.'
+        rollback_restored    = 'Rollback restored from:'
+        health_score         = 'System Health Score'
+        html_report_saved    = 'HTML report saved:'
+        menu_title           = 'WINDOWS SYSTEM OPTIMIZER'
+        menu_mode            = 'Mode:'
+        menu_1               = '[1]  Safe OS Optimization & Temp Cleanup'
+        menu_2               = '[2]  Disk Tools (SFC, DISM, chkdsk, Trim)'
+        menu_3               = '[3]  Advanced & Gaming Tweaks'
+        menu_4               = '[4]  Drivers & System Repair'
+        menu_5               = '[5]  Winget Apps Installer'
+        menu_6               = '[6]  Security & Restore Point'
+        menu_7               = '[7]  Smart Diagnostics & Health Score'
+        menu_8               = '[8]  Startup Programs Manager'
+        menu_9               = '[9]  Windows Services Manager'
+        menu_10              = '[10] Advanced Cleanup (Recycle, Delivery)'
+        menu_11              = '[11] Network Tools (Ping, DNS, Speed)'
+        menu_12              = '[12] Backup & Export'
+        menu_13              = '[13] Battery Health Report'
+        menu_14              = '[14] Task Scheduler'
+        menu_15              = '[15] Settings (Mode, Rollback, Logs)'
+        menu_16              = '[16] Smart Profiles (Gaming, Battery, Privacy, Dev)'
+        menu_17              = '[17] Help Guide'
+        menu_18              = '[18] Exit'
+        menu_select          = 'Select option (1-18)'
+        menu_beginner_note   = '(Beginner mode: options {0} only)'
+        menu_exit_bye        = 'WinOptimizer v{0} - Bye!'
+        help_line1           = 'Modules 1-7: core tools. 8-14: startup, services, cleanup, network, backup, battery, scheduler.'
+        help_line2           = '15: settings and rollback. Beginner mode limits menu items. Logs in logs\ folder.'
+        settings_title       = '=== Settings ==='
+        settings_1           = '1. UI Mode (Beginner / Advanced)'
+        settings_2           = '2. Toggle risky-action confirmations'
+        settings_3           = '3. Restore DNS from backup'
+        settings_4           = '4. Restore registry from backup'
+        settings_5           = '5. Open logs folder'
+        settings_6           = '6. Check for updates'
+        settings_7           = '7. Language (English / Arabic)'
+        settings_8           = '8. Back'
+        profiles_title       = '=== Smart Profiles ==='
+        profiles_disabled    = 'Smart Profiles are disabled in config.json (enableSmartProfiles=false).'
+        profiles_gaming      = '1. Gaming Profile (Ultimate Performance + Gaming tweaks + clear game cache)'
+        profiles_battery     = '2. Battery Saver Profile (Balanced power plan + close background apps)'
+        profiles_privacy     = '3. Privacy / Clean Profile (Disable telemetry + Advanced Cleanup)'
+        profiles_developer   = '4. Developer Profile (Install dev winget bundle)'
+        profiles_back        = '5. Back'
+        profiles_applying    = 'Applying profile:'
+        profiles_done        = 'Profile applied.'
+    }
+    ar = @{
+        admin_required       = 'مطلوب صلاحيات المسؤول (Administrator). شغّل Run.bat كمسؤول.'
+        press_enter          = 'اضغط Enter للمتابعة...'
+        press_enter_menu     = 'اضغط Enter للعودة للقائمة الرئيسية...'
+        invalid_choice       = 'اختيار غير صحيح.'
+        module_missing       = 'الموديول غير موجود:'
+        module_blocked       = 'هذا الموديول مخفي في وضع المبتدئين. بدّل لوضع Advanced من الإعدادات (15).'
+        confirm_risky        = 'تحذير: هذا الإجراء قد يؤثر على استقرار النظام. اكتب YES للمتابعة:'
+        restore_creating     = 'جارٍ إنشاء نقطة استعادة للنظام...'
+        restore_ok           = 'تم إنشاء نقطة الاستعادة.'
+        restore_fail         = 'تعذّر إنشاء نقطة الاستعادة:'
+        requirements_title   = 'فحص النظام عند البدء'
+        req_ok               = '[تمام]'
+        req_warn             = '[تنبيه]'
+        req_fail             = '[فشل]'
+        log_started          = 'بدأت الجلسة'
+        rollback_saved       = 'تم حفظ نسخة الاسترجاع.'
+        rollback_restored    = 'تم الاسترجاع من:'
+        health_score         = 'مؤشر صحة النظام'
+        html_report_saved    = 'تم حفظ تقرير HTML:'
+        menu_title           = 'محسّن نظام ويندوز'
+        menu_mode            = 'الوضع:'
+        menu_1               = '[1]  تحسين آمن للنظام وتنظيف الملفات المؤقتة'
+        menu_2               = '[2]  أدوات القرص (SFC, DISM, chkdsk, Trim)'
+        menu_3               = '[3]  أدوات متقدمة وتعديلات الألعاب'
+        menu_4               = '[4]  التعريفات وإصلاح النظام'
+        menu_5               = '[5]  مثبّت برامج Winget'
+        menu_6               = '[6]  الأمان ونقطة الاستعادة'
+        menu_7               = '[7]  تشخيص ذكي ومؤشر صحة النظام'
+        menu_8               = '[8]  إدارة برامج بدء التشغيل'
+        menu_9               = '[9]  إدارة خدمات ويندوز'
+        menu_10              = '[10] تنظيف متقدم (سلة المحذوفات، Delivery)'
+        menu_11              = '[11] أدوات الشبكة (Ping, DNS, سرعة)'
+        menu_12              = '[12] نسخ احتياطي وتصدير'
+        menu_13              = '[13] تقرير صحة البطارية'
+        menu_14              = '[14] جدولة المهام'
+        menu_15              = '[15] الإعدادات (الوضع، الاسترجاع، السجلات)'
+        menu_16              = '[16] البروفايلات الذكية (ألعاب، بطارية، خصوصية، مطورين)'
+        menu_17              = '[17] دليل المساعدة'
+        menu_18              = '[18] خروج'
+        menu_select          = 'اختر رقم (1-18)'
+        menu_beginner_note   = '(وضع المبتدئين: الخيارات المتاحة فقط {0})'
+        menu_exit_bye        = 'WinOptimizer v{0} - إلى اللقاء!'
+        help_line1           = 'الموديولات 1-7: الأدوات الأساسية. 8-14: بدء التشغيل، الخدمات، التنظيف، الشبكة، النسخ الاحتياطي، البطارية، الجدولة.'
+        help_line2           = '15: الإعدادات والاسترجاع. وضع المبتدئين يقلل عناصر القائمة. السجلات في مجلد logs.'
+        settings_title       = '=== الإعدادات ==='
+        settings_1           = '1. وضع الواجهة (مبتدئ / متقدم)'
+        settings_2           = '2. تفعيل/تعطيل تأكيد الإجراءات الخطرة'
+        settings_3           = '3. استرجاع DNS من النسخة الاحتياطية'
+        settings_4           = '4. استرجاع الريجستري من النسخة الاحتياطية'
+        settings_5           = '5. فتح مجلد السجلات'
+        settings_6           = '6. التحقق من التحديثات'
+        settings_7           = '7. اللغة (English / عربي)'
+        settings_8           = '8. رجوع'
+        profiles_title       = '=== البروفايلات الذكية ==='
+        profiles_disabled    = 'البروفايلات الذكية معطّلة في config.json (enableSmartProfiles=false).'
+        profiles_gaming      = '1. بروفايل الألعاب (أعلى أداء + تعديلات ألعاب + تنظيف كاش الألعاب)'
+        profiles_battery     = '2. بروفايل توفير البطارية (خطة طاقة متوازنة + إغلاق برامج الخلفية)'
+        profiles_privacy     = '3. بروفايل الخصوصية والتنظيف (تعطيل التتبع + تنظيف متقدم)'
+        profiles_developer   = '4. بروفايل المطورين (تثبيت حزمة أدوات المطورين عبر Winget)'
+        profiles_back        = '5. رجوع'
+        profiles_applying    = 'جارٍ تطبيق البروفايل:'
+        profiles_done        = 'تم تطبيق البروفايل.'
+    }
 }
 
 function Write-WinOptHost {
@@ -46,7 +155,13 @@ function Initialize-WinOptConsole {
 }
 
 function T([string]$Key) {
-    if ($script:WinOptStrings.ContainsKey($Key)) { return $script:WinOptStrings[$Key] }
+    $lang = 'en'
+    if ($script:WinOptConfig -and $script:WinOptConfig.language -and $script:WinOptStrings.ContainsKey($script:WinOptConfig.language)) {
+        $lang = $script:WinOptConfig.language
+    }
+    $table = $script:WinOptStrings[$lang]
+    if ($table.ContainsKey($Key)) { return $table[$Key] }
+    if ($script:WinOptStrings['en'].ContainsKey($Key)) { return $script:WinOptStrings['en'][$Key] }
     return $Key
 }
 
@@ -74,10 +189,14 @@ function Import-WinOptConfig {
         requireRestorePointBeforeRisky = $true
         minFreeSpacePercentOnC = 10
         logRetentionDays = 30
-        beginnerAllowedModules = @(1, 2, 6, 7, 15, 16, 17)
+        beginnerAllowedModules = @(1, 2, 6, 7, 15, 16, 17, 18)
         defaultDns = @{ primary = '1.1.1.1'; secondary = '1.0.0.1' }
         wingetBundles = @{}
         scheduledTasks = @{}
+        language = 'en'
+        enableSmartProfiles = $true
+        enableLocalAI = $false
+        autoCreateRestorePoint = $false
     }
     if (Test-Path $configPath) {
         try {
@@ -111,6 +230,10 @@ function Save-WinOptConfig {
         wingetBundles = $script:WinOptConfig.wingetBundles
         scheduledTasks = $script:WinOptConfig.scheduledTasks
         updateCheckUrl = $script:WinOptConfig.updateCheckUrl
+        language = $script:WinOptConfig.language
+        enableSmartProfiles = [bool]$script:WinOptConfig.enableSmartProfiles
+        enableLocalAI = [bool]$script:WinOptConfig.enableLocalAI
+        autoCreateRestorePoint = [bool]$script:WinOptConfig.autoCreateRestorePoint
     }
     $out | ConvertTo-Json -Depth 6 | Set-Content -Path $configPath -Encoding UTF8
 }
@@ -156,9 +279,8 @@ function Confirm-WinOptRisky {
     return $ok
 }
 
-function Ensure-WinOptRestorePoint {
+function New-WinOptRestorePointCore {
     param([string]$Description = 'WinOptimizer_AutoBackup')
-    if (-not $script:WinOptConfig.requireRestorePointBeforeRisky) { return $true }
     Write-Host (T 'restore_creating') -ForegroundColor Cyan
     try {
         Enable-ComputerRestore -Drive 'C:\' -ErrorAction SilentlyContinue
@@ -172,6 +294,26 @@ function Ensure-WinOptRestorePoint {
         Write-Host "$(T 'restore_fail') $_" -ForegroundColor Yellow
         Write-WinOptLog "Restore point failed: $_" 'WARN'
         return $false
+    }
+}
+
+function Ensure-WinOptRestorePoint {
+    param([string]$Description = 'WinOptimizer_AutoBackup')
+    if (-not $script:WinOptConfig.requireRestorePointBeforeRisky) { return $true }
+    return New-WinOptRestorePointCore -Description $Description
+}
+
+function Invoke-WinOptAutoRestorePoint {
+    if (-not $script:WinOptConfig.autoCreateRestorePoint) { return }
+    $rollbackDir = Join-Path $script:WinOptRoot 'Data\rollback'
+    if (-not (Test-Path $rollbackDir)) { New-Item -Path $rollbackDir -ItemType Directory -Force | Out-Null }
+    $markerFile = Join-Path $rollbackDir 'last_auto_restore.txt'
+    $today = (Get-Date).ToString('yyyy-MM-dd')
+    $last = $null
+    if (Test-Path $markerFile) { $last = (Get-Content $markerFile -Raw -ErrorAction SilentlyContinue).Trim() }
+    if ($last -eq $today) { return }
+    if (New-WinOptRestorePointCore -Description 'WinOptimizer_AutoDaily') {
+        Set-Content -Path $markerFile -Value $today -Encoding UTF8
     }
 }
 
@@ -230,6 +372,8 @@ function Test-WinOptStartupRequirements {
     $psVer = $PSVersionTable.PSVersion.ToString()
     Write-WinOptHost "$(T 'req_ok') PowerShell: $psVer" -ForegroundColor Green
     Start-Sleep -Seconds 1
+
+    Invoke-WinOptAutoRestorePoint
 }
 
 function Backup-WinOptRegistryValue {
@@ -329,7 +473,7 @@ function Get-WinOptHealthScore {
         $score -= 15; $issues += 'Reboot pending'; $actions += @{ text = 'Restart PC'; module = $null }
     }
 
-    $errs = @(Get-EventLog -LogName System -EntryType Error -Newest 3 -ErrorAction SilentlyContinue)
+    $errs = @(Get-WinEvent -FilterHashtable @{ LogName = 'System'; Level = 2 } -MaxEvents 3 -ErrorAction SilentlyContinue)
     if ($errs.Count -ge 2) { $score -= 10; $issues += 'Recent system errors in log' }
 
     if ($score -lt 0) { $score = 0 }

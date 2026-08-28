@@ -9,7 +9,7 @@
         "primary": "1.1.1.1",
         "secondary": "1.0.0.1"
     },
-    "beginnerAllowedModules": [1, 2, 6, 7, 15, 16, 17],
+    "beginnerAllowedModules": [1, 2, 6, 7, 15, 16, 17, 18],
     "wingetBundles": {
         "developer": ["Git.Git", "Microsoft.VisualStudioCode", "OpenJS.NodeJS.LTS", "Python.Python.3.12", "7zip.7zip"],
         "gaming": ["Valve.Steam", "Discord.Discord", "VideoLAN.VLC", "7zip.7zip"],
